@@ -15,7 +15,7 @@
             </Input>
         </FormItem>
         <FormItem>
-            <Button  type="primary" long>登录</Button>
+            <Button  type="primary" @click="confirmLogin" long>登录</Button>
         </FormItem>
     </Form>
 </template>
@@ -57,7 +57,20 @@
                     password: this.passwordRules
                 }
             }
+        },
+        methods:{
+            confirmLogin(){
+                this.$refs.loginForm.validate((valid) => {
+                    if (valid) {
+                        this.$emit('on-success-valid', {
+                            userName: this.form.userName,
+                            password: this.form.password
+                        })
+                    }
+                })
+            }
         }
+
     }
 </script>
 
