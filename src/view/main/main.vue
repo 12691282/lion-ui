@@ -7,8 +7,8 @@
                         <template slot="title">
                             <Icon :type="item.icon" />{{item.menuName}}
                         </template>
-                        <template v-if="item.children.length > 0">
-                                <menu-item v-for="child in item.children" :name="`${child.pathName}`">
+                        <template v-if="item.children && item.children.length > 1">
+                                <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.pathName}`">
                                     <Icon :type="child.icon"  />{{child.menuName}}
                                 </menu-item>
                         </template>
@@ -24,7 +24,6 @@
                 <Breadcrumb :style="{margin: '16px 0'}">
                     <BreadcrumbItem>Home</BreadcrumbItem>
                     <BreadcrumbItem>Components</BreadcrumbItem>
-                    <BreadcrumbItem>Layout</BreadcrumbItem>
                 </Breadcrumb>
                 <Card>
                     <div style="height: 600px">Content</div>
