@@ -45,7 +45,7 @@
         data () {
             return {
                 form: {
-                    userName: 'super_admin',
+                    userName: 'admin',
                     password: ''
                 }
             }

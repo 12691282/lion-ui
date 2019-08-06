@@ -22,6 +22,11 @@ const routes = [
         path: '/'+config.mainUrl,
         component: Main
     },
+    {
+        name: 'helloWorld',
+        path: '/helloWorld',
+        component: () => import('@/components/HelloWorld')
+    }
 
 ]
 

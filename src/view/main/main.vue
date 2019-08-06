@@ -18,7 +18,7 @@
         </Sider>
         <Layout :style="{marginLeft: '200px'}">
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-             头部
+                {{$store.state.count}} - {{count.length}}
             </Header>
             <Content :style="{padding: '0 16px 16px'}">
                 <Breadcrumb :style="{margin: '16px 0'}">
@@ -119,20 +119,36 @@
         }
     ]
 
+    import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
+
     export default {
         data () {
             return {
                 menuList:[]
             }
         },
-        methods: {
-            selectMenu(name){
-                console.log(name);
+        computed :{
+            count(){
+                return this.$store.getters.getterCount(1)
             }
         },
-         mounted () {
-             this.menuList = mList;
-         }
+        methods: {
+            ...mapMutations([
+                'testMethod'
+            ]),
+            selectMenu(name){
+                this.testMethod(6)
+                // this.$router.push({name:'helloWorld'})
+            }
+        },
+        watch: {
+            '$route'(newRoute) {
+                console.log('watch newRoute');
+            }
+        },
+        mounted () {
+            this.menuList = mList
+        }
     }
 </script>
 
