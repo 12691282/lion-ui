@@ -1,5 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
+import routers from '@/router'
 
 Vue.use(Vuex)
 
@@ -8,14 +9,8 @@ export default new Vuex.Store({
     state: {
         count : 0
     },
-    getters : {
-        getterCount(state, n = 0) {
-            return state.count + n
-        }
-    },
     mutations: {
         testMethod(state, n = 0){
-            console.log(n)
             state.count += n
         }
     },
