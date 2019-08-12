@@ -27,7 +27,7 @@
                         <BreadcrumbItem>Components</BreadcrumbItem>
                     </Breadcrumb>
                     <Card>
-                        <div style="height: 600px">Content</div>
+                        <div style="height: 600px"><router-view /></div>
                     </Card>
                 </Layout>
             </Content>
@@ -122,6 +122,7 @@
     ]
 
     import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
+    import RouterList from '@/router/routerList'
 
     export default {
         data () {
@@ -139,6 +140,14 @@
             selectMenu(name){
                 this.testMethod(6)
                 this.$router.push({name:'helloWorld'})
+            },
+            menuListMethod () {
+                RouterList.forEach(obj =>{
+                    let menuObj={
+
+                    }
+                    console.log(obj);
+                });
             }
         },
         watch: {
@@ -148,6 +157,7 @@
         },
         mounted () {
             this.menuList = mList
+            this.menuListMethod();
         }
     }
 </script>
