@@ -3,12 +3,12 @@
         <Sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}" >
             <Menu ref="side_menu"  theme="dark" width="auto" @on-select="selectMenu">
                 <template v-for="item in menuList">
-                    <Submenu :name="item.menuId">
+                    <Submenu :name="`${item.menuId}+''`">
                         <template slot="title">
                             <Icon :type="item.icon" />{{item.menuName}}
                         </template>
                         <template v-if="item.children && item.children.length > 1">
-                                <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.pathName}`">
+                                <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.menuId}`">
                                     <Icon :type="child.icon"  />{{child.menuName}}
                                 </menu-item>
                         </template>
@@ -138,15 +138,37 @@
                 'testMethod'
             ]),
             selectMenu(name){
-                this.testMethod(6)
-                this.$router.push({name:'helloWorld'})
+                this.$router.push({name:name})
+            },
+            fileChildren(menuList, children){
+                children.forEach(obj =>{
+                    let detail = obj.detail;
+                    let menuObj={
+                        menuId:obj.name,
+                        icon:detail.icon,
+                        menuName: detail.menuName
+                    }
+                    menuList.push(menuObj)
+                });
             },
             menuListMethod () {
                 RouterList.forEach(obj =>{
-                    let menuObj={
-
+                    let detail = obj.detail;
+                    if(detail.hideMenu){
+                        return true;
                     }
-                    console.log(obj);
+                    let children = obj.children;
+                    let menuObj={
+                        menuId:obj.name,
+                        icon:detail.icon,
+                        menuName: detail.menuName
+                    }
+
+                    this.menuList.push(menuObj)
+                    if(children && children.length > 0){
+                        menuObj.children = [];
+                        this.fileChildren(menuObj.children ,children);
+                    }
                 });
             }
         },
@@ -156,7 +178,7 @@
             }
         },
         mounted () {
-            this.menuList = mList
+            // this.menuList = mList
             this.menuListMethod();
         }
     }

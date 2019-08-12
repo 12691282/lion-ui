@@ -28,6 +28,7 @@ export default [
         }
     },
     {
+        id:1,
         name: 'system-manage',
         path: '/systemManage',
         component: Main,
@@ -37,6 +38,7 @@ export default [
         },
         children:[
             {
+                id:2,
                 name: 'account-manage',
                 path: '/accountManage',
                 detail:{
@@ -46,6 +48,7 @@ export default [
                 component: () => import('@/components/HelloWorld')
             },
             {
+                id:3,
                 name: 'role-manage',
                 path: '/roleManage',
                 detail:{
@@ -55,6 +58,7 @@ export default [
                 component: () => import('@/components/HelloWorld')
             },
             {
+                id:4,
                 name: 'resource-manage',
                 path: '/resourceManage',
                 detail:{
@@ -64,6 +68,7 @@ export default [
                 component: () => import('@/components/HelloWorld')
             },
             {
+                id:5,
                 name: 'authority-manage',
                 path: '/authorityManage',
                 detail:{
@@ -75,6 +80,7 @@ export default [
         ]
     },
     {
+        id:6,
         name: 'function-module',
         path: '/functionModuleA',
         component: Main,
@@ -84,6 +90,7 @@ export default [
         },
         children:[
             {
+                id:7,
                 name: 'moduleA1',
                 path: '/moduleA1',
                 detail:{
@@ -93,6 +100,7 @@ export default [
                 component: () => import('@/components/HelloWorld')
             },
             {
+                id:8,
                 name: 'moduleA2',
                 path: '/moduleA2',
                 detail:{
