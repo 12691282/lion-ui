@@ -37,97 +37,13 @@
 
 <script>
 
-    const mList = [
-        {
-            "menuId":1,
-            "menuName":"系统管理",
-            "icon": "ios-browsers-outline",
-            "children":[
-                {
-                    "menuId":2,
-                    "menuName":"账号管理",
-                    "icon":"ios-build",
-                    "pathName":"user-manager"
-                },
-                {
-                    "menuId":3,
-                    "menuName":"角色管理",
-                    "icon":"ios-barcode",
-                    "pathName":"role-manager"
-                },
-                {
-                    "menuId":4,
-                    "menuName":"资源管理",
-                    "icon":"ios-barcode",
-                    "pathName":"resource-manager"
-                },
-                {
-                    "menuId":5,
-                    "menuName":"权限管理",
-                    "icon":"ios-barcode",
-                    "pathName":"authority-manager"
-                }
-            ]
-        },
-        {
-            "menuId":6,
-            "menuName":"功能模块-1",
-            "icon":"ios-barcode",
-            "children":[
-                {
-                    "menuId":61,
-                    "menuName":"功能模块-1-1",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-1-1"
-                },
-                {
-                    "menuId":62,
-                    "menuName":"功能模块-1-2",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-1-2"
-                },
-                {
-                    "menuId":63,
-                    "menuName":"功能模块-1-3",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-1-3"
-                }
-            ]
-        },
-        {
-            "menuId":7,
-            "menuName":"功能模块-2",
-            "icon":"ios-barcode",
-            "children":[
-                {
-                    "menuId":71,
-                    "menuName":"功能模块-2-1",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-2-1"
-                },
-                {
-                    "menuId":72,
-                    "menuName":"功能模块-2-2",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-2-2"
-                },
-                {
-                    "menuId":73,
-                    "menuName":"功能模块-2-3",
-                    "icon":"ios-barcode",
-                    "pathName":"function-module-2-3"
-                }
-            ]
-        }
-    ]
-
     import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
     import RouterList from '@/router/routerList'
 
     export default {
         data () {
             return {
-                menuList:[]
+                menuList:  this.$store.getters.menuList
             }
         },
         computed :{
@@ -139,38 +55,8 @@
             ]),
             selectMenu(name){
                 this.$router.push({name:name})
-            },
-            fileChildren(menuList, children){
-                children.forEach(obj =>{
-                    let detail = obj.detail;
-                    let menuObj={
-                        menuId:obj.name,
-                        icon:detail.icon,
-                        menuName: detail.menuName
-                    }
-                    menuList.push(menuObj)
-                });
-            },
-            menuListMethod () {
-                RouterList.forEach(obj =>{
-                    let detail = obj.detail;
-                    if(detail.hideMenu){
-                        return true;
-                    }
-                    let children = obj.children;
-                    let menuObj={
-                        menuId:obj.name,
-                        icon:detail.icon,
-                        menuName: detail.menuName
-                    }
-
-                    this.menuList.push(menuObj)
-                    if(children && children.length > 0){
-                        menuObj.children = [];
-                        this.fileChildren(menuObj.children ,children);
-                    }
-                });
             }
+
         },
         watch: {
             '$route'(newRoute) {
@@ -178,8 +64,7 @@
             }
         },
         mounted () {
-            // this.menuList = mList
-            this.menuListMethod();
+
         }
     }
 </script>
