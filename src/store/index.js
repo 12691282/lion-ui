@@ -8,15 +8,15 @@ Vue.use(Vuex)
 const getRouterList = (_routerList) => {
     let list = [];
     _routerList.forEach(obj =>{
-        let detail = obj.detail;
-        if(detail.hideMenu){
+        let meta = obj.meta;
+        if(meta.hideMenu){
             return true;
         }
         let children = obj.children;
         let menuObj={
             menuId:obj.name,
-            icon:detail.icon,
-            menuName: detail.menuName
+            icon:meta.icon,
+            menuName: meta.menuName
         }
 
         list.push(menuObj)
@@ -31,11 +31,11 @@ const getRouterList = (_routerList) => {
 
 const toFillChildren = (menuList, children) =>{
     children.forEach(obj =>{
-        let detail = obj.detail;
+        let meta = obj.meta;
         let menuObj={
             menuId:obj.name,
-            icon:detail.icon,
-            menuName: detail.menuName
+            icon:meta.icon,
+            menuName: meta.menuName
         }
         menuList.push(menuObj)
     });

@@ -18,14 +18,15 @@
         </Sider>
         <Layout :style="{marginLeft: '200px'}">
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-                {{$store.state.count}}
+                <Breadcrumb :style="{margin: '16px 0'}">
+                    <BreadcrumbItem>Home</BreadcrumbItem>
+                    <BreadcrumbItem>Components</BreadcrumbItem>
+                </Breadcrumb>
             </Header>
-            <Content :style="{padding: '0 16px 16px'}">
+            <Content :style="{padding: '5px 0px 16px 20px'}">
                 <Layout class="main-layout-con">
-                    <Breadcrumb :style="{margin: '16px 0'}">
-                        <BreadcrumbItem>Home</BreadcrumbItem>
-                        <BreadcrumbItem>Components</BreadcrumbItem>
-                    </Breadcrumb>
+                    <div class="tag-nav-wrapper">
+                    </div>
                     <Card>
                         <div style="height: 600px"><router-view /></div>
                     </Card>
@@ -38,7 +39,6 @@
 <script>
 
     import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
-    import RouterList from '@/router/routerList'
 
     export default {
         data () {
@@ -60,6 +60,7 @@
         },
         watch: {
             '$route'(newRoute) {
+                console.log(newRoute);
                 console.log('watch newRoute');
             }
         },
@@ -70,5 +71,9 @@
 </script>
 
 <style scoped>
-
+    .tag-nav-wrapper{
+        padding: 0;
+        height:40px;
+        background:#F0F0F0;
+    }
 </style>

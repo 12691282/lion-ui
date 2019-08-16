@@ -2,12 +2,22 @@ import Login from '@/view/login/login'
 import Main from '@/view/main'
 import config from '@/config'
 
+
+/****
+ *  数据说明：
+ *  因为$route 属性里有meta顾自定义此meta字段
+ *
+ *
+ *
+ */
+
+
 export default [
     {
         name: '',
         path: '/',
         redirect : '/' +config.loginUrl,
-        detail:{
+        meta:{
             hideMenu: true
         }
     },
@@ -15,7 +25,7 @@ export default [
         name: config.loginUrl,
         path: '/'+config.loginUrl,
         component: Login,
-        detail:{
+        meta:{
             hideMenu: true
         }
     },
@@ -23,7 +33,7 @@ export default [
         name: config.mainUrl,
         path: '/'+config.mainUrl,
         component: Main,
-        detail:{
+        meta:{
             hideMenu: true
         }
     },
@@ -32,7 +42,7 @@ export default [
         name: 'system-manage',
         path: '/systemManage',
         component: Main,
-        detail:{
+        meta:{
             menuName:"系统管理",
             icon: "ios-browsers-outline"
         },
@@ -41,7 +51,7 @@ export default [
                 id:2,
                 name: 'account-manage',
                 path: '/accountManage',
-                detail:{
+                meta:{
                     menuName:"账号管理",
                     icon: "ios-build"
                 },
@@ -51,7 +61,7 @@ export default [
                 id:3,
                 name: 'role-manage',
                 path: '/roleManage',
-                detail:{
+                meta:{
                     menuName:"角色管理",
                     icon: "ios-barcode"
                 },
@@ -61,7 +71,7 @@ export default [
                 id:4,
                 name: 'resource-manage',
                 path: '/resourceManage',
-                detail:{
+                meta:{
                     menuName:"资源管理",
                     icon: "ios-barcode"
                 },
@@ -71,7 +81,7 @@ export default [
                 id:5,
                 name: 'authority-manage',
                 path: '/authorityManage',
-                detail:{
+                meta:{
                     menuName:"权限管理",
                     icon: "ios-barcode"
                 },
@@ -84,7 +94,7 @@ export default [
         name: 'function-module',
         path: '/functionModuleA',
         component: Main,
-        detail:{
+        meta:{
             menuName:"功能模块-1",
             icon:"ios-barcode"
         },
@@ -93,7 +103,7 @@ export default [
                 id:7,
                 name: 'moduleA1',
                 path: '/moduleA1',
-                detail:{
+                meta:{
                     menuName:"功能模块-A-1",
                     icon: "ios-build"
                 },
@@ -103,7 +113,7 @@ export default [
                 id:8,
                 name: 'moduleA2',
                 path: '/moduleA2',
-                detail:{
+                meta:{
                     menuName:"功能模块-A-2",
                     icon: "ios-build"
                 },
