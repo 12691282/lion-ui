@@ -22,20 +22,31 @@ export default [
         }
     },
     {
-        name: config.loginUrl,
-        path: '/'+config.loginUrl,
+        name:  config.loginUrl,
+        path: '/' + config.loginUrl,
         component: Login,
         meta:{
             hideMenu: true
         }
     },
     {
-        name: config.mainUrl,
-        path: '/'+config.mainUrl,
+        name: "main",
+        path: '/main',
         component: Main,
         meta:{
             hideMenu: true
-        }
+        },
+        children:[
+            {
+                id:2,
+                name: 'home',
+                path: '/home-info',
+                meta:{
+                    menuName:"主页",
+                    icon: "ios-build"
+                },
+                component: () => import('@/view/system/home')
+            }]
     },
     {
         id:1,
@@ -55,7 +66,7 @@ export default [
                     menuName:"账号管理",
                     icon: "ios-build"
                 },
-                component: () => import('@/components/HelloWorld')
+                component: () => import('@/view/system/account')
             },
             {
                 id:3,

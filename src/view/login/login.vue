@@ -13,6 +13,7 @@
 
 <script>
     import LoginForm from './login-form';
+
     export default {
         name: "",
         data() {
@@ -23,7 +24,7 @@
         methods:{
             handleSubmit({ userName, password }){
                 this.$router.push({
-                    name: this.$config.mainUrl
+                    name: 'home'
                 })
             }
         },

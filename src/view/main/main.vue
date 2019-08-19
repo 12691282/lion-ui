@@ -23,13 +23,22 @@
                     <BreadcrumbItem>Components</BreadcrumbItem>
                 </Breadcrumb>
             </Header>
-            <Content :style="{padding: '5px 0px 16px 20px'}">
-                <Layout class="main-layout-con">
-                    <div class="tag-nav-wrapper">
-                    </div>
-                    <Card>
-                        <div style="height: 600px"><router-view /></div>
-                    </Card>
+            <Content class="main-content-con" >
+                <Layout class="main-layout-con" >
+                        <Tabs type="card" closable :value="currentTab"
+                              :animated="false"
+                              @on-tab-remove="handleTabRemove"
+                              @on-click="onTagClick"  >
+                            <tab-pane :label="tag.title"  :name="tag.name" :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList" :key="tagIndex" >
+                                <Card>
+                                    <router-view />
+
+                                    <!--<iframe frameborder="0" width="100%" :height="frameHeight" marginheight="0" scrolling="auto" marginwidth="0" :src="tag.url"></iframe>-->
+                                    <!---->
+                                </Card>
+                            </tab-pane>
+                        </Tabs>
+
                 </Layout>
             </Content>
         </Layout>
@@ -39,41 +48,64 @@
 <script>
 
     import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
-
+    import {initLocalStorage} from '@/store/util'
     export default {
         data () {
             return {
-                menuList:  this.$store.getters.menuList
+                menuList: this.$store.getters.menuList,
+                currentTab : null
             }
         },
         computed :{
-
+            tagNavList () {
+               return this.$store.state.tagNavList
+            }
         },
         methods: {
             ...mapMutations([
-                'testMethod'
+                'setTagNavList',
+                'addTag'
             ]),
             selectMenu(name){
                 this.$router.push({name:name})
+            },
+            handleTabRemove (name) {
+                this['tab' + name] = false;
+            },
+            onTagClick(name){
+                console.log(name)
+                // this.$router.push({name:name})
             }
 
         },
         watch: {
             '$route'(newRoute) {
-                console.log(newRoute);
-                console.log('watch newRoute');
+                const { name, path, params, meta } = newRoute
+                console.log(newRoute)
+                let info = {"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon}
+                this.addTag(info);
             }
         },
         mounted () {
-
+            this.setTagNavList();
+            const { name, path, query, meta } = this.$route
+            this.addTag({"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon});
         }
     }
 </script>
 
 <style scoped>
-    .tag-nav-wrapper{
-        padding: 0;
-        height:40px;
-        background:#F0F0F0;
+    .main-content-con{
+            height: 100%;
+            overflow: hidden;
+    }
+    .main-layout-con{
+        padding: 10px 0px 16px 20px;
+        height: 100%;
+    }
+    .content-wrapper{
+        padding: 0px;
+        height: 100%;
+        overflow: auto;
     }
 </style>

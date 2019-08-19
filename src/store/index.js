@@ -1,6 +1,5 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import routers from '@/router'
 import RouterList from '@/router/routerList'
 
 Vue.use(Vuex)
@@ -43,15 +42,18 @@ const toFillChildren = (menuList, children) =>{
 
 export default new Vuex.Store({
     state: {
-        count : 0
-
+        tagNavList: []
     },
     getters:{
         menuList:(state, getter) => getRouterList(RouterList)
     },
     mutations: {
-        testMethod(state, n = 0){
-            state.count += n
+
+        setTagNavList(state, list){
+
+        },
+        addTag (state, route) {
+            state.tagNavList.push(route)
         }
     },
     actions: {
