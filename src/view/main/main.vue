@@ -74,9 +74,9 @@
 
             },
             handleTabRemove (name) {
-                console.log(name)
-                let List = this.tagNavList.filter(item => item.name !== name)
-
+                let list = this.tagNavList.filter(item => item.name !== name)
+                console.log(list )
+                console.log(this.tagNavList )
             },
             onTagClick(name){
                 this.$router.push({name:name})

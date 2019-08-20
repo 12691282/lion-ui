@@ -49,7 +49,7 @@ export default new Vuex.Store({
     },
     mutations: {
         setTagNavList(state, tab){
-            state.tagNavList.push(tab)
+            state.tagNavList = tab
         },
         addTag (state, route) {
             state.tagNavList.push(route)
