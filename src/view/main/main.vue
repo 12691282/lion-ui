@@ -29,15 +29,13 @@
                               :animated="false"
                               @on-tab-remove="handleTabRemove"
                               @on-click="onTagClick"  >
-                            <tab-pane :label="tag.title"  :name="tag.name" :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList" :key="tagIndex" >
-                                <Card>
-                                    <router-view />
+                            <tab-pane :label="tag.title" :name="tag.name" :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList" :key="tagIndex" >
 
-                                    <!--<iframe frameborder="0" width="100%" :height="frameHeight" marginheight="0" scrolling="auto" marginwidth="0" :src="tag.url"></iframe>-->
-                                    <!---->
-                                </Card>
                             </tab-pane>
                         </Tabs>
+                        <Card>
+                            <router-view />
+                        </Card>
 
                 </Layout>
             </Content>
@@ -57,37 +55,57 @@
             }
         },
         computed :{
-            tagNavList () {
-               return this.$store.state.tagNavList
+            tagNavList : {
+                get () {
+                    return this.$store.state.tagNavList
+                },
+                set (val) {
+                    this.$store.commit('setTagNavList', val)
+                }
             }
         },
         methods: {
             ...mapMutations([
-                'setTagNavList',
-                'addTag'
+                'addTag',
+                'closeTag'
             ]),
             selectMenu(name){
-                this.$router.push({name:name})
+                this.$router.push({name})
+
             },
             handleTabRemove (name) {
-                this['tab' + name] = false;
+                console.log(name)
+                let List = this.tagNavList.filter(item => item.name !== name)
+
             },
             onTagClick(name){
-                console.log(name)
-                // this.$router.push({name:name})
+                this.$router.push({name:name})
+            },
+            checkNavList(name){
+                for(let nav of this.tagNavList){
+                    if(name === nav.name){
+                        return  true;
+                    }
+                }
+                return false;
             }
 
         },
         watch: {
             '$route'(newRoute) {
                 const { name, path, params, meta } = newRoute
-                console.log(newRoute)
-                let info = {"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon}
-                this.addTag(info);
+                let mark = this.checkNavList(name);
+                if(mark){
+
+                }else {
+                    let info = {"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon}
+                    this.tagNavList.push(info)
+                }
+
+                console.log(this.tagNavList)
             }
         },
         mounted () {
-            this.setTagNavList();
             const { name, path, query, meta } = this.$route
             this.addTag({"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon});
         }
@@ -102,10 +120,5 @@
     .main-layout-con{
         padding: 10px 0px 16px 20px;
         height: 100%;
-    }
-    .content-wrapper{
-        padding: 0px;
-        height: 100%;
-        overflow: auto;
     }
 </style>

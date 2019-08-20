@@ -48,12 +48,14 @@ export default new Vuex.Store({
         menuList:(state, getter) => getRouterList(RouterList)
     },
     mutations: {
-
-        setTagNavList(state, list){
-
+        setTagNavList(state, tab){
+            state.tagNavList.push(tab)
         },
         addTag (state, route) {
             state.tagNavList.push(route)
+        },
+        closeTag(state, route){
+            state.tagNavList = state.tagNavList.filter(item => item.name !== route)
         }
     },
     actions: {

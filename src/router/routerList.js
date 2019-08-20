@@ -44,6 +44,7 @@ export default [
                 meta:{
                     menuName:"主页",
                     icon: "ios-build"
+
                 },
                 component: () => import('@/view/system/home')
             }]
