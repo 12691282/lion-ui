@@ -4,4 +4,5 @@ export default {
     //登录页面路径
     loginUrl:'login'
 
+
 }

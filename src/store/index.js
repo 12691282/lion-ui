@@ -42,7 +42,8 @@ const toFillChildren = (menuList, children) =>{
 
 export default new Vuex.Store({
     state: {
-        tagNavList: []
+        tagNavList: [],
+        breadcrumbList : []
     },
     getters:{
         menuList:(state, getter) => getRouterList(RouterList)
@@ -51,11 +52,35 @@ export default new Vuex.Store({
         setTagNavList(state, tab){
             state.tagNavList = tab
         },
+        setBreadcrumbList(state, breadcrumb){
+            state.breadcrumbList = breadcrumb
+        },
         addTag (state, route) {
             state.tagNavList.push(route)
         },
-        closeTag(state, route){
-            state.tagNavList = state.tagNavList.filter(item => item.name !== route)
+        setBreadCrumb(state, route){
+            let routeName = route.name
+            let arr = []
+            this.getters.menuList.forEach(menu =>{
+                let fName = menu.name
+                let childrenList = menu.children;
+                if(childrenList){
+                    for(let childMenu of childrenList){
+                        if(childMenu.menuId === routeName){
+                            arr.push({
+                                'name':menu.menuName
+                            })
+                            arr.push({
+                                'name':childMenu.menuName
+                            })
+                        }
+                    }
+                }
+
+
+            })
+
+           this.state.breadcrumbList = arr
         }
     },
     actions: {
