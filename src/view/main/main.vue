@@ -1,7 +1,10 @@
 <template>
     <div class="layout">
         <Sider :style="{position: 'fixed', height: '100vh', left: 0, overflow: 'auto'}" >
-            <Menu ref="side_menu"  theme="dark" width="auto" @on-select="selectMenu">
+            <div class="logo-wrapper">
+                <img style="margin-left: 20px; margin-top: 10px;" :src="logoImg"/>
+            </div>
+            <Menu  theme="dark" width="auto" @on-select="selectMenu">
                 <template v-for="item in menuList">
                     <Submenu :name="`${item.menuId}+''`">
                         <template slot="title">
@@ -45,6 +48,7 @@
     import {initLocalStorage} from '@/store/util'
     import BreadcrumbNav from '@/view/main/components/breadcrumb'
     import Config from '@/config';
+    import LogoImg from '@/assets/images/logo.jpg'
 
     export default {
         components: {
@@ -53,7 +57,8 @@
         data () {
             return {
                 menuList: this.$store.getters.menuList,
-                currentTab : null
+                currentTab : null,
+                logoImg : LogoImg
             }
         },
         computed :{
@@ -91,14 +96,12 @@
                 return  navList[0].name
             },
             handleTabRemove (name) {
-
                 this.tagNavList.forEach(item => {
                     if(item.name === name){
                         item.isClose = false
                         return false;
                     }
                 })
-
                 if(this.currentTab === name){
                     let reName = this.getNextRoute(name)
                     this.$router.push({'name':reName})
@@ -143,5 +146,10 @@
     .main-layout-con{
         padding: 10px 0px 16px 20px;
         height: 100%;
+    }
+
+    .logo-wrapper{
+        padding: 0;
+        height:65px;
     }
 </style>
