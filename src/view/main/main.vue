@@ -44,6 +44,7 @@
     import {mapMutations} from 'vuex'
     import {initLocalStorage} from '@/store/util'
     import BreadcrumbNav from '@/view/main/components/breadcrumb'
+    import Config from '@/config';
 
     export default {
         components: {
@@ -81,16 +82,13 @@
             selectMenu(name){
                 this.$router.push({name})
             },
-            getNextRoute(list, route) {
-                let res = {}
+            getNextRoute(name) {
                 const index = this.tagNavList.findIndex(item => item.name === name)
-
-                if (index ===  this.tagNavList.length - 1){
-                    res =  this.tagNavList[ this.tagNavList.length - 2]
-                } else {
-                    res =  this.tagNavList[index + 1]
+                const navList  = this.tagNavList.filter(item => item.isClose === true)
+                if(navList.length === 0){
+                    return Config.homeUrl
                 }
-                return res
+                return  navList[0].name
             },
             handleTabRemove (name) {
 
@@ -102,13 +100,13 @@
                 })
 
                 if(this.currentTab === name){
-                    let nextOne = this.getNextRoute(name)
-                    this.$router.push({name:nextOne.name})
+                    let reName = this.getNextRoute(name)
+                    this.$router.push({'name':reName})
                 }
 
             },
             onTagClick(name){
-                this.$router.push({name:name})
+                this.$router.push({'name':name})
             },
             checkNavList(name){
                 for(let nav of this.tagNavList){
@@ -122,7 +120,6 @@
         },
         watch: {
             '$route'(newRoute) {
-                console.log('$route')
                 const { name, path, params, meta } = newRoute
                 this.currentTab = name
                 if(!this.checkNavList(name)){
@@ -133,9 +130,7 @@
             }
         },
         mounted () {
-            const { name, path, query, meta } = this.$route
-            this.currentTab = name
-            this.addTag({"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon,'isClose':true});
+            this.$router.push({'name':Config.homeUrl})
         }
     }
 </script>
