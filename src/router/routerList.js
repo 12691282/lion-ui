@@ -40,10 +40,10 @@ export default [
             {
                 id:2,
                 name: 'home',
-                path: '/home-info',
+                path: '/homeInfo',
                 meta:{
                     menuName:"主页",
-                    icon: "ios-build"
+                    icon: "md-home"
 
                 },
                 component: () => import('@/view/system/home')
@@ -56,7 +56,7 @@ export default [
         component: Main,
         meta:{
             menuName:"系统管理",
-            icon: "ios-browsers-outline"
+            icon: "ios-construct-outline"
         },
         children:[
             {
@@ -65,7 +65,7 @@ export default [
                 path: '/accountManage',
                 meta:{
                     menuName:"账号管理",
-                    icon: "ios-build"
+                    icon: "md-person-add"
                 },
                 component: () => import('@/view/system/account')
             },
@@ -75,7 +75,7 @@ export default [
                 path: '/roleManage',
                 meta:{
                     menuName:"角色管理",
-                    icon: "ios-barcode"
+                    icon: "ios-paper-outline"
                 },
                 component: () => import('@/components/HelloWorld')
             },
@@ -85,7 +85,7 @@ export default [
                 path: '/resourceManage',
                 meta:{
                     menuName:"资源管理",
-                    icon: "ios-barcode"
+                    icon: "ios-pricetags-outline"
                 },
                 component: () => import('@/components/HelloWorld')
             },

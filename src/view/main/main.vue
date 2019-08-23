@@ -5,6 +5,9 @@
                 <img style="margin-left: 20px; margin-top: 10px;" :src="logoImg"/>
             </div>
             <Menu  theme="dark" width="auto" @on-select="selectMenu">
+                <menu-item   name="home">
+                    <Icon type="md-home" />首页
+                </menu-item>
                 <template v-for="item in menuList">
                     <Submenu :name="`${item.menuId}+''`">
                         <template slot="title">
@@ -87,10 +90,16 @@
             selectMenu(name){
                 this.$router.push({name})
             },
+            getHomeInfo(){
+                return {'name':Config.homeUrl,'title': '首页' , 'icon':'md-home','isClose':true };
+            },
             getNextRoute(name) {
                 const index = this.tagNavList.findIndex(item => item.name === name)
                 const navList  = this.tagNavList.filter(item => item.isClose === true)
                 if(navList.length === 0){
+                    if(name === Config.homeUrl){
+                        //todo 首页bug
+                    }
                     return Config.homeUrl
                 }
                 return  navList[0].name
@@ -133,7 +142,10 @@
             }
         },
         mounted () {
+            this.currentTab = Config.homeUrl
             this.$router.push({'name':Config.homeUrl})
+            //初始化时加入首页
+            this.tagNavList.push(this.getHomeInfo())
         }
     }
 </script>

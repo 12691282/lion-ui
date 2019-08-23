@@ -1,12 +1,11 @@
 <template>
     <Breadcrumb :style="{margin: '16px 0'}">
-        <BreadcrumbItem to="home-info">主页</BreadcrumbItem>
+        <BreadcrumbItem to="homeInfo">{{homeName}}</BreadcrumbItem>
         <BreadcrumbItem v-for="(bread, breadIndex) in breadcrumbList" :key="breadIndex" >{{bread.name}}</BreadcrumbItem>
     </Breadcrumb>
 </template>
 
 <script>
-    //import someComponent from './someComponent'
     export default {
         name: "breadcrumb",
         props:{
@@ -19,11 +18,8 @@
         },
         data() {
             return {
-                msg: "Hello Vue.js"
+                homeName: "主页"
             }
-        },
-        components: {
-            //someComponent
         }
     }
 </script>
