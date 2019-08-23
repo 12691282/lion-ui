@@ -98,7 +98,10 @@
                 const navList  = this.tagNavList.filter(item => item.isClose === true)
                 if(navList.length === 0){
                     if(name === Config.homeUrl){
-                        //todo 首页bug
+                        let self = this
+                        setTimeout(() =>{
+                            self.checkNavList(Config.homeUrl)
+                        },100 );
                     }
                     return Config.homeUrl
                 }
