@@ -6,15 +6,19 @@ import router from './router'
 import iView from 'iview'
 import store from './store'
 import config from '@/config'
+import ajax from '@/config/ajax'
 
 import 'iview/dist/styles/iview.css';
-
 
 
 Vue.config.productionTip = false
 
 //注册全局配置
 Vue.prototype.$config = config
+
+
+// 将AJAX方法绑定到全局
+Vue.prototype.$ajax = ajax
 
 Vue.use(iView)
 /* eslint-disable no-new */

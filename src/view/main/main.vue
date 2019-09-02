@@ -97,6 +97,7 @@
                 const index = this.tagNavList.findIndex(item => item.name === name)
                 const navList  = this.tagNavList.filter(item => item.isClose === true)
                 if(navList.length === 0){
+                    //只剩首页的时候， 关闭时需要延迟
                     if(name === Config.homeUrl){
                         let self = this
                         setTimeout(() =>{
