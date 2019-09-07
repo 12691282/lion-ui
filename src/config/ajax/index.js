@@ -70,17 +70,19 @@ function apiAxios ({method, url, params, success, failure}) {
                     failure(data)
                 } else {
 
-                    console.log(this)
-
-                    window.alert('error: ' + JSON.stringify(data))
+                    iView.$Notice.error({
+                        title: '提示',
+                        desc: '系统错误'
+                    });
                 }
             }
         })
         .catch( (err) =>{
-            let res = err.response
-            if (err) {
-                // window.alert('api error, HTTP CODE: ' + res.status)
-            }
+            console.log(err.response)
+            iView.$Notice.error({
+                title: '提示',
+                desc: '系统错误'
+            });
         })
 }
 
