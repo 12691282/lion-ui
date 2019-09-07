@@ -14,6 +14,7 @@ const router =  new Router({
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start()
 
+
   // if(to.name !== config.loginUrl){
   //     next({
   //         name: config.loginUrl // 跳转到登录页

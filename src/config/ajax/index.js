@@ -1,6 +1,8 @@
 // 引用axios
 const axios = require('axios')
 import config from '@/config'
+import iView from 'iview'
+
 
 // 配置API接口地址
 const root = 'http://localhost:8081/lion'
@@ -34,20 +36,13 @@ const filterNull = (list)=> {
     return arr
 }
 
-/*
-  接口处理函数
-  这个函数每个项目都是不一样的，我现在调整的是适用于
-  https://cnodejs.org/api/v1 的接口，如果是其他接口
-  需要根据接口的参数进行调整。参考说明文档地址：
-  https://cnodejs.org/topic/5378720ed6e2d16149fa16bd
-  主要是，不同的接口的成功标识和失败提示是不一致的。
-  另外，不同的项目的处理方法也是不一致的，这里出错就是简单的alert
-*/
+
 function apiAxios ({method, url, params, success, failure}) {
     if (params) {
         params = filterNull(params)
     }
     console.log('ajax request => ' + root+url)
+
 
     axios({
         method: method,
@@ -63,12 +58,20 @@ function apiAxios ({method, url, params, success, failure}) {
 
             if (data.code === config.result_code.success) {
                 if (success) {
+
+                    iView.Notice.success({
+                        title: '提示',
+                        desc: data.message
+                    });
                     success(data)
                 }
             } else {
                 if (failure) {
                     failure(data)
                 } else {
+
+                    console.log(this)
+
                     window.alert('error: ' + JSON.stringify(data))
                 }
             }

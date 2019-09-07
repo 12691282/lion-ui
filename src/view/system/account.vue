@@ -1,6 +1,5 @@
 <template>
         <div style="height: 1000px;">{{msg}}</div>
-    <!--<someComponent></someComponent>-->
 </template>
 
 <script>
@@ -17,25 +16,15 @@
                     success:(data)=>{
                     console.log('account output')
                     console.log(data)
-                        this.$Notice.success({
-                            title: 'Notification title',
-                            desc:  'Here is the notification description. Here is the notification description. '
-                        });
 
-                },
-                    failure:()=>{
-                        this.$Notice.open({
-                            title: 'Notification title',
-                            desc:  'Here is the notification description. Here is the notification description. '
-                        });
-                    }})
+                }})
             }
         },
         components: {
             //someComponent
         },
         mounted(){
-            this.test()
+
         }
     }
 </script>
