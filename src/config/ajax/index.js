@@ -1,11 +1,28 @@
 // 引用axios
-const axios = require('axios')
+import axios from 'axios'
 import config from '@/config'
 import iView from 'iview'
 
-
 // 配置API接口地址
-const root = 'http://localhost:8081/lion'
+const root = 'http://localhost:8091/lion'
+
+const http = axios.create({
+    timeout: 1000 * 60,
+    withCredentials: true,
+    baseURL: root,
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+})
+
+http.interceptors.response.use(response => {
+    if (response.data && response.data.code === 500) {
+
+    }
+    return response
+}, error => {
+    return Promise.reject(error)
+})
 
 
 // 自定义判断元素类型JS
@@ -14,7 +31,6 @@ const toType  = (obj) =>({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowe
 
 // 参数过滤函数
 const filterNull = (list)=> {
-
     let arr = []
     for (let key in list) {
         let obj = list[key]
@@ -39,23 +55,22 @@ const filterNull = (list)=> {
 
 function apiAxios ({method, url, params, success, failure}) {
     if (params) {
-        params = filterNull(params)
+        if((toType(params) === 'array')){
+            params = filterNull(params)
+        }
+
     }
-    console.log('ajax request => ' + root+url)
-
-
-    axios({
+    console.log('ajax request =>', root+url, 'params =>',params )
+    http({
         method: method,
         url: url,
         data: method === 'POST' || method === 'PUT' ? params : null,
         params: method === 'GET' || method === 'DELETE' ? params : null,
-        baseURL: root,
         withCredentials: false
     }).then((res)=> {
         let data = res.data
         console.log('ajax result => ')
         console.log(data)
-
             if (data.code === config.result_code.success) {
                 if (success) {
 
@@ -69,8 +84,7 @@ function apiAxios ({method, url, params, success, failure}) {
                 if (failure) {
                     failure(data)
                 } else {
-
-                    iView.$Notice.error({
+                    iView.Notice.error({
                         title: '提示',
                         desc: '系统错误'
                     });
@@ -78,8 +92,8 @@ function apiAxios ({method, url, params, success, failure}) {
             }
         })
         .catch( (err) =>{
-            console.log(err.response)
-            iView.$Notice.error({
+            console.log(err)
+            iView.Notice.error({
                 title: '提示',
                 desc: '系统错误'
             });
@@ -89,9 +103,9 @@ function apiAxios ({method, url, params, success, failure}) {
 // 返回在vue模板中的调用接口
 
 export default  {
-    get : ({url, params, success, failure})=> apiAxios({method:'GET',url, params, success, failure}),
-    post : (url, params, success, failure) => apiAxios({method:'POST', url, params, success, failure}),
-    put : (url, params, success, failure) => apiAxios({method:'PUT', url, params, success, failure}),
-    delete :(url, params, success, failure) => apiAxios({method:'DELETE', url, params, success, failure})
+    get : ({url, params, success, failure})  => apiAxios({method:'GET', url, params, success, failure}),
+    post : ({url, params, success, failure}) => apiAxios({method:'POST', url, params, success, failure}),
+    put : ({url, params, success, failure}) => apiAxios({method:'PUT', url, params, success, failure}),
+    delete :({url, params, success, failure}) => apiAxios({method:'DELETE', url, params, success, failure})
 }
 
