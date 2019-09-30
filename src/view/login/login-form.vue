@@ -3,7 +3,7 @@
         <FormItem prop="userName">
             <Input v-model="form.userName" placeholder="请输入用户名">
                 <span slot="prepend">
-                <Icon :size="16" type="ios-person"></Icon>
+                    <Icon :size="16" type="ios-person"></Icon>
                 </span>
             </Input>
         </FormItem>
@@ -46,7 +46,7 @@
             return {
                 form: {
                     userName: 'admin',
-                    password: ''
+                    password: 'admin'
                 }
             }
         },
