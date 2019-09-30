@@ -44,7 +44,9 @@ export default {
         accountName: ""
       },
       searchRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
+        name: [
+            { required: true, message: "请输入姓名.", trigger: "blur" }
+        ],
         accountName: [
           { required: true, message: "请输入账号名.", trigger: "blur" }
         ]
