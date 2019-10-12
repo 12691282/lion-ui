@@ -3,12 +3,12 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import iView from 'iview'
+import ViewUI from 'view-design';
 import store from './store'
 import config from '@/config'
 import ajax from '@/config/ajax'
 
-import 'iview/dist/styles/iview.css';
+import 'view-design/dist/styles/iview.css';
 
 
 Vue.config.productionTip = false
@@ -20,7 +20,7 @@ Vue.prototype.$config = config
 // 将AJAX方法绑定到全局
 Vue.prototype.$ajax = ajax
 
-Vue.use(iView)
+Vue.use(ViewUI)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

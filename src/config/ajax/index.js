@@ -1,8 +1,7 @@
 // 引用axios
 import axios from 'axios'
 import config from '@/config'
-import iView from 'iview'
-
+import iView from 'view-design';
 // 配置API接口地址
 const root = 'http://localhost:8091/lion'
 
@@ -53,7 +52,7 @@ const filterNull = (list)=> {
 }
 
 
-function apiAxios ({method, url, params, success, failure}) {
+function apiAxios ({method, notice=true, url, params, success, failure}) {
     if (params) {
         if((toType(params) === 'array')){
             params = filterNull(params)
@@ -69,24 +68,25 @@ function apiAxios ({method, url, params, success, failure}) {
         withCredentials: false
     }).then((res)=> {
         let data = res.data
-        console.log('ajax result => ')
-        console.log(data)
+        console.log('ajax result => ', data)
             if (data.code === config.result_code.success) {
                 if (success) {
-
-                    iView.Notice.success({
-                        title: '提示',
-                        desc: data.message
-                    });
+                    if(notice){
+                        iView.Notice.success({
+                            title: '提示',
+                            desc: data.message
+                        });
+                    }
                     success(data)
                 }
             } else {
                 if (failure) {
                     failure(data)
                 } else {
+                    let msg = data.message || '系统错误'
                     iView.Notice.error({
                         title: '提示',
-                        desc: '系统错误'
+                        desc: msg
                     });
                 }
             }
@@ -103,9 +103,9 @@ function apiAxios ({method, url, params, success, failure}) {
 // 返回在vue模板中的调用接口
 
 export default  {
-    get : ({url, params, success, failure})  => apiAxios({method:'GET', url, params, success, failure}),
-    post : ({url, params, success, failure}) => apiAxios({method:'POST', url, params, success, failure}),
-    put : ({url, params, success, failure}) => apiAxios({method:'PUT', url, params, success, failure}),
-    delete :({url, params, success, failure}) => apiAxios({method:'DELETE', url, params, success, failure})
+    get : ({url, notice, params,  success, failure})  => apiAxios({method:'GET', notice,  url, params, success, failure}),
+    post : ({url, notice,  params, success, failure}) => apiAxios({method:'POST', notice, url, params, success, failure}),
+    put : ({url, notice,  params, success, failure}) => apiAxios({method:'PUT',notice,  url, params, success, failure}),
+    delete :({url, notice,  params, success, failure}) => apiAxios({method:'DELETE', notice, url, params, success, failure})
 }
 

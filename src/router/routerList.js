@@ -67,7 +67,7 @@ export default [
                     menuName:"账号管理",
                     icon: "md-person-add"
                 },
-                component: () => import('@/view/system/account')
+                component: () => import('@/view/system/accountList')
             },
             {
                 id:3,
