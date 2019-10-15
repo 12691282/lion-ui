@@ -91,6 +91,16 @@ export default [
             },
             {
                 id:5,
+                name: 'menu-manage',
+                path: '/menuManage',
+                meta:{
+                    menuName:"组织机构管理",
+                    icon: "ios-aperture-outline"
+                },
+                component: () => import('@/components/HelloWorld')
+            },
+            {
+                id:6,
                 name: 'authority-manage',
                 path: '/authorityManage',
                 meta:{
@@ -98,6 +108,16 @@ export default [
                     icon: "ios-barcode"
                 },
                 component: () => import('@/components/HelloWorld')
+            },
+            {
+                id:7,
+                name: 'direction-manage',
+                path: '/directionManage',
+                meta:{
+                    menuName:"字典管理",
+                    icon: "ios-book-outline"
+                },
+                component: () => import('@/view/system/organizationList')
             }
         ]
     },
