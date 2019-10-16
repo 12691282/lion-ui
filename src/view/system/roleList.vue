@@ -1,16 +1,13 @@
 <template>
   <div>
-    <Form :model="searchItem" :label-width="60" ref="searchItem" inline :rules="searchRules">
-      <FormItem label="名字">
-        <Input v-model="searchItem.name" placeholder="请输入名字..." style="width: auto" />
-      </FormItem>
-      <FormItem label="账号名">
-        <Input v-model="searchItem.accountName  " placeholder="请输入账号名..." style="width: auto" />
+    <Form :model="searchItem" :label-width="80" ref="searchItem" inline>
+      <FormItem label="角色名称">
+        <Input v-model="searchItem.roleName"  maxlength="24" placeholder="请输入角色名称..." style="width: auto" />
       </FormItem>
       <FormItem style="margin-left: -30px;">
         <Button type="primary" @click="querySubmit()">查询</Button>
       </FormItem>
-      <FormItem style="margin-left: -50px;">
+      <FormItem style="margin-left: -60px;">
         <Button type="success" @click="addNew()">新增</Button>
       </FormItem>
     </Form>
@@ -22,9 +19,7 @@
       <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary" size="small"  @click="editRecord(index)">修改</Button>
-        <Button type="warning" size="small" v-if="row.recordStatus == 0" @click="stopRecord(index)">停用</Button>
-        <Button type="success" size="small" v-if="row.recordStatus == 1" @click="startRecord(index)">启用</Button>
-        <Button type="error" size="small"  v-if="row.recordStatus == 1" @click="deleteRecord(index)" >删除</Button>
+        <Button type="error" size="small"    @click="deleteRecord(index)" >删除</Button>
       </template>
     </Table>
     <Page
@@ -40,60 +35,24 @@
       <p slot="header">
         <span>{{titleName}}</span>
       </p>
-      <Form ref="accountModel" :model="accountModel" :label-width="80" :rules="accountModelRules">
-        <FormItem label="名字" prop="name">
+      <Form ref="roleModel" :model="roleModel" :label-width="80" :rules="roleModelRules">
+        <FormItem label="角色名称" prop="roleName">
           <Input
             type="text"
-            v-model="accountModel.name"
-            maxlength="10"
-            show-word-limit
-            placeholder="请输入名字"
-          />
-        </FormItem>
-        <FormItem label="账号名" prop="accountName">
-          <Input
-            type="text"
-            v-model="accountModel.accountName"
-            maxlength="18"
-            show-word-limit
-            placeholder="请输入账号名"
-          />
-        </FormItem>
-        <FormItem label="密码" prop="password">
-          <Input
-            type="password"
-            v-model="accountModel.password"
+            v-model="roleModel.roleName"
             maxlength="24"
-            password
-            placeholder="请输入密码"
-          />
-        </FormItem>
-        <FormItem label="确认密码" prop="confirmPassword">
-          <Input
-            type="password"
-            v-model="accountModel.confirmPassword"
-            maxlength="24"
-            password
-            placeholder="请输入确认密码"
-          />
-        </FormItem>
-        <FormItem label="E-mail" prop="email">
-          <Input
-            type="text"
-            v-model="accountModel.email"
-            maxlength="30"
             show-word-limit
-            placeholder="请输入e-mail"
+            placeholder="请输入角色名称"
           />
         </FormItem>
-        <FormItem label="备注" prop="backup">
+        <FormItem label="描述" prop="description">
           <Input
             type="textarea"
-            v-model="accountModel.backup"
+            v-model="roleModel.description"
             :rows="2"
             maxlength="50"
             show-word-limit
-            placeholder="请输入备注"
+            placeholder="请输入描述"
           />
         </FormItem>
       </Form>
@@ -107,78 +66,26 @@
 </template>
 
 <script>
+import Config from '../../config'
+
 export default {
   name: "",
   data() {
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        if (this.accountModel.confirmPassword !== "") {
-          // 对第二个密码框单独验证
-          this.$refs.accountModel.validateField("confirmPassword");
-        }
-        callback();
-      }
-    };
-    const validatePassCheck = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入确认密码"));
-      } else if (value !== this.accountModel.password) {
-        callback(new Error("两次输入密码不一直!"));
-      } else {
-        callback();
-      }
-    };
     return {
       isDisplay: false,
       titleName: "",
-      accountModel: {
+      roleModel: {
         id: "",
-        name: "",
-        accountName: "",
-        password: "",
-        confirmPassword: "",
-        email: "",
-        backup: ""
+        roleName: "",
+        description: ""
       },
       searchItem: {
-        name: "",
-        accountName: ""
+        roleName: ""
       },
-      searchRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ]
-      },
-      accountModelRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ],
-        password: [
-          { required: true, validator: validatePass, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        confirmPassword: [
-          { required: true, validator: validatePassCheck, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        email: [
-          { required: true, message: "请输入e-mail", trigger: "blur" },
-          { type: "email", message: "email格式不正确", trigger: "blur" }
-        ]
+      roleModelRules: {
+        roleName: [
+          { required: true, message: "请输入角色名称.", trigger: "blur" }
+        ] 
       },
       columnsTitle: [
         {
@@ -193,26 +100,13 @@ export default {
           slot: "number"
         },
         {
-          title: "名字",
-          width: 100,
-          slot: "name"
+          title: "角色名称",
+          key: "roleName"
         },
+ 
         {
-          title: "账号名",
-          key: "accountName"
-        },
-        {
-          title: "email",
-          key: "email"
-        },
-        {
-          title: "状态",
-          width: 70,
-          key: "statusName"
-        },
-        {
-          title: "备注",
-          key: "backup"
+          title: "描述",
+          key: "description"
         },
         {
           title: "操作",
@@ -221,7 +115,7 @@ export default {
         }
       ],
       list: [],
-      size: 5,
+      size: Config.default_page_size,
       total: 0,
       index: 1
     };
@@ -229,14 +123,13 @@ export default {
   methods: {
     getList() {
       let params = {
-        name: this.searchItem.name,
-        accountName: this.searchItem.accountName,
+        roleName: this.searchItem.roleName,
         size: this.size,
         index: this.index
       };
 
       this.$ajax.post({
-        url: "/account/getInfo",
+        url: "/role/getList",
         params: params,
         notice: false,
         success: result => {
@@ -249,49 +142,25 @@ export default {
     editRecord(index) {
       this.titleName = "修改";
       let rowRocord = this.list[index];
-      this.$refs.accountModel.resetFields();
+      this.$refs.roleModel.resetFields();
       let newObj = {};
       for (let indx in rowRocord) {
         newObj[indx] = rowRocord[indx];
       }
-      this.accountModel = newObj;
+      this.roleModel = newObj;
       this.isDisplay = true;
-    },
-    stopRecord(index) {
-      let params = {
-        id: this.list[index].id
-      };
-      this.$ajax.post({
-        url: "/account/stopUseById",
-        params: params,
-        success: result => {
-          this.reloadList();
-        }
-      });
-    },
-    startRecord(index) {
-      let params = {
-        id: this.list[index].id
-      };
-      this.$ajax.post({
-        url: "/account/startUseById",
-        params: params,
-        success: result => {
-          this.reloadList();
-        }
-      });
     },
     deleteRecord(index) {
       let record = this.list[index]
       this.$Modal.confirm({
           title: '删除确认!',
-          content: '<p>是否删除 '+record.name+' 的账号</p>',
+          content: '<p>是否删除 '+record.roleName+' 的角色</p>',
           onOk: () => {
               let params = {
                 id: record.id
               };
               this.$ajax.post({
-                  url: "/account/deleteRecordById",
+                  url: "/role/deleteRecordById",
                   params: params,
                   success: result => {
                     this.reloadList();
@@ -314,11 +183,11 @@ export default {
       this.isDisplay = true;
     },
     submitData() {
-      this.$refs.accountModel.validate(valid => {
+      this.$refs.roleModel.validate(valid => {
         if (valid) {
-          let params = this.accountModel;
+          let params = this.roleModel;
           this.$ajax.post({
-            url: "/account/saveOrUpdate",
+            url: "/role/saveOrUpdate",
             params: params,
             success: result => {
               this.reloadList();
@@ -328,11 +197,11 @@ export default {
       });
     },
     handleReset(name) {
-      this.$refs.accountModel.resetFields();
+      this.roleModel.id = null
+      this.$refs.roleModel.resetFields();
     },
     reloadList() {
-      this.searchItem.name = "";
-      this.searchItem.accountName = "";
+      this.searchItem.roleName = "";
       this.getList();
       this.isDisplay = false;
     }

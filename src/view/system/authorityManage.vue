@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Form :model="searchItem" :label-width="60" ref="searchItem" inline >
+    <Form :model="searchItem" :label-width="60" ref="searchItem" inline :rules="searchRules">
       <FormItem label="名字">
-        <Input v-model="searchItem.name" maxlength="10" placeholder="请输入名字..." style="width: auto" />
+        <Input v-model="searchItem.name" placeholder="请输入名字..." style="width: auto" />
       </FormItem>
       <FormItem label="账号名">
-        <Input v-model="searchItem.accountName" maxlength="18" placeholder="请输入账号名..." style="width: auto" />
+        <Input v-model="searchItem.accountName  " placeholder="请输入账号名..." style="width: auto" />
       </FormItem>
       <FormItem style="margin-left: -30px;">
         <Button type="primary" @click="querySubmit()">查询</Button>
@@ -107,8 +107,6 @@
 </template>
 
 <script>
-import Config from '@/config'
-
 export default {
   name: "",
   data() {
@@ -147,6 +145,12 @@ export default {
       searchItem: {
         name: "",
         accountName: ""
+      },
+      searchRules: {
+        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
+        accountName: [
+          { required: true, message: "请输入账号名.", trigger: "blur" }
+        ]
       },
       accountModelRules: {
         name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
@@ -217,7 +221,7 @@ export default {
         }
       ],
       list: [],
-      size: Config.default_page_size,
+      size: 5,
       total: 0,
       index: 1
     };
@@ -324,7 +328,6 @@ export default {
       });
     },
     handleReset(name) {
-      this.accountModel.id = null
       this.$refs.accountModel.resetFields();
     },
     reloadList() {

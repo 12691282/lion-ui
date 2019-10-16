@@ -7,5 +7,6 @@ export default {
     result_code:{
         success : '000',
         defeat: '001'
-    }
+    },
+    default_page_size : 10
 }

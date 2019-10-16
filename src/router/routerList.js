@@ -77,7 +77,7 @@ export default [
                     menuName:"角色管理",
                     icon: "ios-paper-outline"
                 },
-                component: () => import('@/components/HelloWorld')
+                component: () => import('@/view/system/roleList')
             },
             {
                 id:4,
@@ -87,7 +87,7 @@ export default [
                     menuName:"资源管理",
                     icon: "ios-pricetags-outline"
                 },
-                component: () => import('@/components/HelloWorld')
+                component: () => import('@/view/system/resourceList')
             },
             {
                 id:5,
@@ -97,7 +97,7 @@ export default [
                     menuName:"组织机构管理",
                     icon: "ios-aperture-outline"
                 },
-                component: () => import('@/components/HelloWorld')
+                component: () => import('@/view/system/organizationList')
             },
             {
                 id:6,
@@ -107,7 +107,7 @@ export default [
                     menuName:"权限管理",
                     icon: "ios-barcode"
                 },
-                component: () => import('@/components/HelloWorld')
+                component: () => import('@/view/system/authorityManage')
             },
             {
                 id:7,
