@@ -8,8 +8,8 @@
                 <menu-item   name="home">
                     <Icon type="md-home" />首页
                 </menu-item>
-                <template v-for="item in menuList">
-                    <Submenu :name="`${item.menuId}+''`">
+                <template v-for="item in menuList" >
+                    <Submenu :name="`${item.menuId}+''`" :key="item.menuId">
                         <template slot="title">
                             <Icon :type="item.icon" />{{item.menuName}}
                         </template>
@@ -93,7 +93,7 @@
                 this.$router.push({name})
             },
             getHomeInfo(){
-                return {'name':Config.homeUrl,'title': '首页' , 'icon':'md-home','isClose':true };
+                return {'name':Config.homeName,'title': '首页' , 'icon':'md-home','isClose':true };
             },
             getNextRoute(name) {
                 const index = this.tagNavList.findIndex(item => item.name === name)
@@ -149,9 +149,8 @@
             }
         },
         mounted () {
-            console.log('mounted () {')
             this.currentTab = Config.homeUrl
-            this.$router.push({'name':Config.homeUrl})
+            this.$router.push({'name':Config.homeName})
             //初始化时加入首页
             this.tagNavList.push(this.getHomeInfo())
         }

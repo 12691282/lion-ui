@@ -1,6 +1,7 @@
 export default {
+    homeName:'home',
     //首页页面路径
-    homeUrl:'home',
+    homeUrl:'/home',
     //登录页面路径
     loginUrl:'login',
     //返回状态

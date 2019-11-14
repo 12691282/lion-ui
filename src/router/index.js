@@ -15,6 +15,7 @@ const router =  new Router({
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start()
+    
     console.log(to)
 
   // if(to.name !== config.loginUrl){

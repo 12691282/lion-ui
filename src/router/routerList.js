@@ -38,8 +38,8 @@ let defaultModuleList = [{
     children:[
         {
             id:2,
-            name: 'home',
-            path: '/system/home',
+            name: Config.homeName,
+            path: Config.homeUrl,
             meta:{
                 menuName:"主页",
                 icon: "md-home"
@@ -131,8 +131,8 @@ const ajaxResourse = () => {
         children:[
             {
                 id:2,
-                name: 'home',
-                path: '/system/home',
+                name: Config.homeName,
+                path: Config.homeUrl,
                 meta:{
                     menuName:"主页",
                     icon: "md-home"

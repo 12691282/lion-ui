@@ -36,7 +36,7 @@
                     success: result => {
                           console.log(result)
                           this.$router.push({
-                             name: Config.homeUrl
+                             name: Config.homeName
                           })
                     }
                 });    
