@@ -67,10 +67,12 @@
         computed :{
             tagNavList : {
                 get () {
-                    return this.$store.state.tagNavList
+                  console.log('tagNavList get () {')
+                    console.log(this.$store.getters)
+                    return this.$store.state.tagsView.tagNavList
                 },
                 set (val) {
-                    this.$store.commit('setTagNavList', val)
+                    this.$store.commit('setTagNavList', {key:'tagsView',vulue})
                 }
             },
             breadcrumbList:{
@@ -78,7 +80,7 @@
                     return this.$store.state.breadcrumbList
                 },
                 set (val) {
-                    this.$store.commit('setBreadcrumbList', val)
+                    this.$store.commit('setBreadcrumbList', {key:'tagsView',vulue})
                 }
             }
         },
@@ -136,6 +138,7 @@
         },
         watch: {
             '$route'(newRoute) {
+                console.log('$route(newRoute) {')
                 const { name, path, params, meta } = newRoute
                 this.currentTab = name
                 if(!this.checkNavList(name)){
@@ -146,6 +149,7 @@
             }
         },
         mounted () {
+            console.log('mounted () {')
             this.currentTab = Config.homeUrl
             this.$router.push({'name':Config.homeUrl})
             //初始化时加入首页

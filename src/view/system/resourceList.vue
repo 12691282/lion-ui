@@ -6,7 +6,6 @@
           v-model="searchItem.roleName"
           maxlength="24"
           placeholder="请输入资源名称..."
-          style="width: auto"
         />
       </FormItem>
       <FormItem style="margin-left: -30px;">
@@ -17,26 +16,22 @@
       </FormItem>
     </Form>
 
-    <Table border :columns="columnsTitle" :data="list">
-      <template slot-scope="{ row }" slot="name">
-        <strong>{{ row.name }}</strong>
-      </template>
-      <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" @click="addChildRecord(index)">增加子节点</Button>
-        <Button type="primary" size="small" @click="editRecord(index)">修改</Button>
-        <Button type="error" size="small" @click="deleteRecord(index)">删除</Button>
-      </template>
-    </Table>
-    <Page
-      style="margin-top: 10px"
-      :total="total"
-      :page-size="size"
-      @on-change="changePageEvent"
-      show-elevator
-      show-total
-    />
+    <TreeTable :items='list'  :columns='columnsTitle'>
+         <template slot-scope="{ data }" slot="action">
+            <Button type="primary" size="small" @click="addChildRecord(data)">增加子节点</Button>
+            <Button type="primary" size="small" @click="editRecord(data)">修改</Button>
+            <Button type="error" size="small" @click="deleteRecord(data)">删除</Button>
+         </template>
+    </TreeTable>
 
-    <Modal scrollable :closable="false" width="400px;" v-model="isDisplay" :style="{top: '20px'}" :mask-closable="false">
+    <Modal
+      scrollable
+      :closable="false"
+      width="400px;"
+      v-model="isDisplay"
+      :style="{top: '20px'}"
+      :mask-closable="false"
+    >
       <p slot="header">
         <span>{{titleName}}</span>
       </p>
@@ -50,7 +45,12 @@
           <Poptip placement="bottom-start">
             <Input v-model="resourceModel.pname" style="width: 286px;" placeholder="选择上级资源" />
             <div class="api" slot="content">
-                 <Tree :data="data2" ref="higherUpsTree" readonly @on-select-change="selectHigherUps" ></Tree>
+              <Tree
+                :data="selectTree"
+                ref="higherUpsTree"
+                readonly
+                @on-select-change="selectHigherUps"
+              ></Tree>
             </div>
           </Poptip>
         </FormItem>
@@ -85,6 +85,16 @@
           </Select>
         </FormItem>
 
+        <FormItem label="顺序号" prop="orderNo">
+          <Input
+            type="text"
+            v-model="resourceModel.orderNo"
+            maxlength="4"
+            show-word-limit
+            placeholder="请输入顺序号"
+          />
+        </FormItem>
+
         <FormItem label="描述" prop="description">
           <Input
             type="textarea"
@@ -106,44 +116,15 @@
 </template>
 
 <script>
+import TreeTable from '@/components/tree-table'
 import Config from "../../config";
 
 export default {
-  name: "",
+  name: "resourceList",
+  components: {TreeTable},
   data() {
     return {
-      data2: [
-                    {
-                        title: 'parent 1',
-                        expand: true,
-                        children: [
-                            {
-                                title: 'parent 1-1',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-1-1',
-                                    },
-                                    {
-                                        title: 'leaf 1-1-2',
-                                    }
-                                ]
-                            },
-                            {
-                                title: 'parent 1-2',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-2-1',
-                                    },
-                                    {
-                                        title: 'leaf 1-2-1',
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ],
+      selectTree: [],
       higherUpsList: [],
       resourceTypeList: [
         { value: 0, label: "菜单" },
@@ -170,12 +151,8 @@ export default {
       },
       columnsTitle: [
         {
-          type: "selection",
-          width: 60,
-          align: "center"
-        },
-        {
           title: "资源名称",
+          width: 80,
           key: "resourceName"
         },
         {
@@ -197,8 +174,6 @@ export default {
         }
       ],
       list: [],
-      size: Config.default_page_size,
-      total: 0,
       index: 1
     };
   },
@@ -211,29 +186,46 @@ export default {
       };
 
       this.$ajax.post({
-        url: "/resource/getList",
+        url: "/resource/getTreeList",
         params: params,
         notice: false,
         success: result => {
-          let page = result.data;
-          this.list = page.list;
-          this.total = page.total;
+          this.list = result.data;
+          if (this.list.length > 0) {
+              this.selectTree = [];
+              this.fillSelectTree(this.list, this.selectTree);
+          }
         }
       });
     },
-    editRecord(index) {
+    fillSelectTree(listTree, selectTree) {
+      for(let item of listTree){
+          let node = {};
+          node['title'] = item['resourceName'];
+          node['value'] = item['id'];
+          node['expand'] =  true;
+          let children = item['children']
+          if(children.length > 0){
+            node['children'] = [];
+            this.fillSelectTree(children, node['children'])
+          }
+          selectTree.push(node)
+          
+      }
+    },
+    editRecord(record) {
       this.titleName = "修改";
-      let rowRocord = this.list[index];
       this.$refs.resourceModel.resetFields();
       let newObj = {};
       for (let indx in this.resourceModel) {
-        newObj[indx] = rowRocord[indx];
+        newObj[indx] = record[indx];
       }
       this.resourceModel = newObj;
+      this.resourceModel.pid = newObj.pid;
+      this.resourceModel.pname = newObj.pname;
       this.isDisplay = true;
     },
-    deleteRecord(index) {
-      let record = this.list[index];
+    deleteRecord(record) {
       this.$Modal.confirm({
         title: "删除确认!",
         content: "<p>是否删除 " + record.resourceName + " 的资源</p>",
@@ -252,18 +244,13 @@ export default {
         cancelText: "取消"
       });
     },
-    addChildRecord(index) {
-        this.handleReset();
-        let record = this.list[index];
-        this.resourceModel.pid = record.id;
-        this.resourceModel.pname = record.resourceName;
-        this.isDisplay = true;
+    addChildRecord(data) {
+      this.handleReset();
+      this.resourceModel.pid = data.id;
+      this.resourceModel.pname = data.resourceName;
+      this.isDisplay = true;
     },
     querySubmit() {
-      this.getList();
-    },
-    changePageEvent(currentIndex) {
-      this.index = currentIndex;
       this.getList();
     },
     addNew() {
@@ -285,19 +272,19 @@ export default {
         }
       });
     },
-    cancelInput () {
-        this.handleReset();
-        this.isDisplay = false
-    },  
+    cancelInput() {
+      this.handleReset();
+      this.isDisplay = false;
+    },
     handleReset() {
       this.resourceModel.id = null;
       this.resourceModel.pid = null;
       this.resourceModel.pname = null;
       this.$refs.resourceModel.resetFields();
       let selectedNodes = this.$refs.higherUpsTree.getSelectedNodes();
-      if(selectedNodes){
-        for(let node of selectedNodes){
-            node.selected = false
+      if (selectedNodes) {
+        for (let node of selectedNodes) {
+          node.selected = false;
         }
       }
     },
@@ -306,16 +293,14 @@ export default {
       this.getList();
       this.isDisplay = false;
     },
-    selectHigherUps (_nodes){
-        let node = _nodes[0]
-        if(node){
-            this.resourceModel.pid = node.nodeKey
-            this.resourceModel.pname = node.title
-        }
-        
+    selectHigherUps(_nodes) {
+      let node = _nodes[0];
+      if (node) {
+        this.resourceModel.pid = node.value;
+        this.resourceModel.pname = node.title;
+      }
     }
   },
-  components: {},
   mounted() {
     this.getList();
   }

@@ -1,7 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import RouterList from '@/router/routerList'
-
+import tagsView from './modules/tagsView'
 Vue.use(Vuex)
 
 const getRouterList = (_routerList) => {
@@ -41,54 +41,56 @@ const toFillChildren = (menuList, children) =>{
 }
 
 export default new Vuex.Store({
-    state: {
-        tagNavList: [],
-        breadcrumbList : []
-    },
-    getters:{
-        menuList:(state, getter) => getRouterList(RouterList)
-    },
-    mutations: {
-        setTagNavList(state, tab){
-            state.tagNavList = tab
-        },
-        setBreadcrumbList(state, breadcrumb){
-            state.breadcrumbList = breadcrumb
-        },
-        addTag (state, route) {
-            state.tagNavList.push(route)
-        },
-        setBreadCrumb(state, route){
-            let routeName = route.name
-            let arr = []
-            this.getters.menuList.forEach(menu =>{
-                let fName = menu.name
-                let childrenList = menu.children;
-                if(childrenList){
-                    for(let childMenu of childrenList){
-                        if(childMenu.menuId === routeName){
-                            arr.push({
-                                'name':menu.menuName
-                            })
-                            arr.push({
-                                'name':childMenu.menuName
-                            })
-                        }
-                    }
-                }
-
-
-            })
-
-           this.state.breadcrumbList = arr
-        }
-    },
-    actions: {
-        actionsAddCount(context, n = 0) {
-            return context.commit('testMethod', n)
-        }
-    },
     modules: {
-       //
+         tagsView
     }
+    // ,
+    // state: {
+    //     tagNavList: [],
+    //     breadcrumbList : []
+    // },
+    // getters:{
+    //     menuList:(state, getter) => getRouterList(RouterList)
+    // },
+    // mutations: {
+    //     setTagNavList(state, tab){
+    //         state.tagNavList = tab
+    //     },
+    //     setBreadcrumbList(state, breadcrumb){
+    //         state.breadcrumbList = breadcrumb
+    //     },
+    //     addTag (state, route) {
+    //         state.tagNavList.push(route)
+    //     },
+    //     setBreadCrumb(state, route){
+    //         let routeName = route.name
+    //         let arr = []
+    //         this.getters.menuList.forEach(menu =>{
+    //             let fName = menu.name
+    //             let childrenList = menu.children;
+    //             if(childrenList){
+    //                 for(let childMenu of childrenList){
+    //                     if(childMenu.menuId === routeName){
+    //                         arr.push({
+    //                             'name':menu.menuName
+    //                         })
+    //                         arr.push({
+    //                             'name':childMenu.menuName
+    //                         })
+    //                     }
+    //                 }
+    //             }
+
+
+    //         })
+
+    //        this.state.breadcrumbList = arr
+    //     }
+    // },
+    // actions: {
+    //     actionsAddCount(context, n = 0) {
+    //         return context.commit('testMethod', n)
+    //     }
+    // }
+ 
 })

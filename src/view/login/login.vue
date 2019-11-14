@@ -24,9 +24,28 @@
         },
         methods:{
             handleSubmit({ userName, password }){
-                this.$router.push({
-                    name: Config.homeUrl
-                })
+
+                let params = {
+                    'accountName':userName,
+                    'password':password
+                }
+                this.$ajax.post({
+                    url: "/system/login",
+                    params: params,
+                    notice: false,
+                    success: result => {
+                          console.log(result)
+                          this.$router.push({
+                             name: Config.homeUrl
+                          })
+                    }
+                });    
+
+
+           
+                // this.$router.push({
+                //     name: Config.homeUrl
+                // })
             }
         },
         components: {

@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "axios": "^0.19.0",
-    "view-design": "^4.0.0",
     "iview-area": "^1.6.0",
+    "js-cookie": "^2.2.1",
+    "view-design": "^4.0.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "vxe-utils": "^1.7.2",
+    "xe-utils": "^2.2.11"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

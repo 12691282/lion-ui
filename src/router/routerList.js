@@ -1,7 +1,7 @@
 import Login from '@/view/login/login'
 import Main from '@/view/main'
-import config from '@/config'
-
+import Config from '@/config'
+import Ajax from '@/config/ajax'
 
 /****
  *  数据说明：
@@ -12,18 +12,110 @@ import config from '@/config'
  */
 
 
-export default [
-    {
+let defaultModuleList = [{
+    name: 'root',
+    path: '/',
+    redirect : '/' +Config.loginUrl,
+    meta:{
+        hideMenu: true
+    }
+},
+{
+    name:  Config.loginUrl,
+    path: '/' + Config.loginUrl,
+    component: Login,
+    meta:{
+        hideMenu: true
+    }
+},
+{
+    name: "main",
+    path: '/main',
+    component: Main,
+    meta:{
+        hideMenu: true
+    },
+    children:[
+        {
+            id:2,
+            name: 'home',
+            path: '/system/home',
+            meta:{
+                menuName:"主页",
+                icon: "md-home"
+            },
+            component: () => import('@/view/system/home')
+        }]
+}]
+
+
+
+// let path = '@/view'+item.resourceUrl
+const ajaxResourse = () => {
+
+
+    // let fillToModuleInfo = item => {
+    //     if(!item.resourceUrl){
+    //            return 
+    //     }
+    //     let name = item.resourceUrl.replace('/', '-')
+    
+    //     let module = {
+    //         name,
+    //         id:item.id,
+    //         path: '/'+item.resourceUrl,
+    //         mata:{
+    //             menuName: item.resourceName
+    //         }
+    //     }
+    //     return module
+    // }
+
+    // Ajax.post({
+    //     url: "/account/getResourceList",
+    //     params: {},
+    //     notice: false,
+    //     success: result => {
+    //         let data = result.data
+    //         if(data.length === 0){
+    //             return 
+    //         }
+    //         for(let item of data){
+    //             let module = fillToModuleInfo(item)
+    //             if(module){
+    //                 module.component = Main
+    //                 if(item.children.length > 0){
+    //                     let childrenArr = []
+    //                     for(let child of item.children){
+    //                         let cModule = fillToModuleInfo(child)
+    //                         childrenArr[childrenArr.length] = cModule
+    //                     }
+    //                     module.children = childrenArr;
+    //                 } 
+    //                 defaultModuleList.push(module)
+    //             }
+              
+    //         }
+        
+    //     }
+    // });
+   
+    return list //defaultModuleList
+}
+
+
+// export default [
+    let list = [{
         name: '',
         path: '/',
-        redirect : '/' +config.loginUrl,
+        redirect : '/' +Config.loginUrl,
         meta:{
             hideMenu: true
         }
     },
     {
-        name:  config.loginUrl,
-        path: '/' + config.loginUrl,
+        name:  Config.loginUrl,
+        path: '/' + Config.loginUrl,
         component: Login,
         meta:{
             hideMenu: true
@@ -40,15 +132,14 @@ export default [
             {
                 id:2,
                 name: 'home',
-                path: '/homeInfo',
+                path: '/system/home',
                 meta:{
                     menuName:"主页",
                     icon: "md-home"
-
                 },
                 component: () => import('@/view/system/home')
             }]
-    },
+    }, 
     {
         id:1,
         name: 'system-manage',
@@ -62,7 +153,7 @@ export default [
             {
                 id:2,
                 name: 'account-manage',
-                path: '/accountManage',
+                path: '/system/accountList',
                 meta:{
                     menuName:"账号管理",
                     icon: "md-person-add"
@@ -72,7 +163,7 @@ export default [
             {
                 id:3,
                 name: 'role-manage',
-                path: '/roleManage',
+                path: '/system/roleList',
                 meta:{
                     menuName:"角色管理",
                     icon: "ios-paper-outline"
@@ -154,3 +245,6 @@ export default [
         ]
     }
 ]
+
+
+export default ajaxResourse()
