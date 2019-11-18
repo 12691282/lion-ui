@@ -21,7 +21,7 @@
         data() {
             return {
                 homeUrl:Config.homeUrl,
-                homeName: "主页"
+                homeName: "首页"
             }
         } 
         

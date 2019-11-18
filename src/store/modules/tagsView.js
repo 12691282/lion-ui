@@ -37,8 +37,7 @@ const toFillChildren = (menuList, children) =>{
     });
 }
 
-
-export default {
+const tagsView = {
 
     state: {
         tagNavList: [],
@@ -58,7 +57,7 @@ export default {
         addTag (state, route) {
             state.tagNavList.push(route)
         },
-        setBreadCrumb(state, route){
+        SET_BREAD_CRUMB(state, route){
             let routeName = route.name
             let arr = []
             this.getters.menuList.forEach(menu =>{
@@ -78,16 +77,16 @@ export default {
 
 
             })
-
-           this.state.breadcrumbList = arr
+           state.breadcrumbList = arr
         },
         addMenuList(){
             
         }
     },
     actions: {
-        actionsAddCount(context, n = 0) {
-            return context.commit('testMethod', n)
+
+        setBreadCrumb({commit}, route){
+            commit('SET_BREAD_CRUMB', route)
         },
         addMeunList({commit}, list){
             commit('addMenuList', list)
@@ -95,3 +94,5 @@ export default {
     }
 
 }
+
+export default tagsView

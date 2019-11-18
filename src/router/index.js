@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import RouterList from './routerList'
 import iView from 'iview'
 import Ajax from '../config/ajax'
+import Config from '../config';
 
 Vue.use(Router)
 
@@ -15,10 +16,13 @@ const router =  new Router({
 
 router.beforeEach((to, from, next) => {
     iView.LoadingBar.start()
-    
+    if (to.name === Config.loginUrl) {
+ 
+    }
+
     console.log(to)
 
-  // if(to.name !== config.loginUrl){
+  // if(to.path === config.loginUrl){
   //     next({
   //         name: config.loginUrl // 跳转到登录页
   //     })

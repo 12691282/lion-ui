@@ -41,7 +41,7 @@ let defaultModuleList = [{
             name: Config.homeName,
             path: Config.homeUrl,
             meta:{
-                menuName:"主页",
+                menuName:"首页",
                 icon: "md-home"
             },
             component: () => import('@/view/system/home')
@@ -134,7 +134,7 @@ const ajaxResourse = () => {
                 name: Config.homeName,
                 path: Config.homeUrl,
                 meta:{
-                    menuName:"主页",
+                    menuName:"首页",
                     icon: "md-home"
                 },
                 component: () => import('@/view/system/home')

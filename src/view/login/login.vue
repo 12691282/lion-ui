@@ -34,15 +34,11 @@
                     params: params,
                     notice: false,
                     success: result => {
-                          console.log(result)
                           this.$router.push({
                              name: Config.homeName
                           })
                     }
                 });    
-
-
-           
                 // this.$router.push({
                 //     name: Config.homeUrl
                 // })

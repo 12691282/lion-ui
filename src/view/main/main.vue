@@ -61,54 +61,46 @@
             return {
                 menuList: this.$store.getters.menuList,
                 currentTab : null,
-                logoImg : LogoImg
+                logoImg : LogoImg,
+                homeName : Config.homeName,
+                openNavList : [],
+                lastTableName : ''
             }
         },
         computed :{
             tagNavList : {
                 get () {
-                  console.log('tagNavList get () {')
-                    console.log(this.$store.getters)
                     return this.$store.state.tagsView.tagNavList
                 },
                 set (val) {
                     this.$store.commit('setTagNavList', {key:'tagsView',vulue})
                 }
             },
-            breadcrumbList:{
-                get () {
-                    return this.$store.state.breadcrumbList
-                },
-                set (val) {
-                    this.$store.commit('setBreadcrumbList', {key:'tagsView',vulue})
-                }
+            breadcrumbList() {
+                return this.$store.state.tagsView.breadcrumbList
             }
         },
         methods: {
-            ...mapMutations([
-                'addTag',
-                'setBreadCrumb'
-            ]),
             selectMenu(name){
                 this.$router.push({name})
             },
             getHomeInfo(){
-                return {'name':Config.homeName,'title': '首页' , 'icon':'md-home','isClose':true };
+                return {'name':this.homeName,'title': '首页' , 'icon':'md-home','isClose':true };
             },
             getNextRoute(name) {
                 const index = this.tagNavList.findIndex(item => item.name === name)
-                const navList  = this.tagNavList.filter(item => item.isClose === true)
-                if(navList.length === 0){
-                    //只剩首页的时候， 关闭时需要延迟
-                    if(name === Config.homeUrl){
+                 this.openNavList  = this.tagNavList.filter(item => item.isClose === true)
+                if(this.openNavList.length === 0){
+                    //只剩首页的时候， 关闭时需要延迟新增一个首页的table
+                    if(name === this.homeName){
                         let self = this
                         setTimeout(() =>{
-                            self.checkNavList(Config.homeUrl)
+                            self.checkNavList(self.homeName)
                         },100 );
                     }
-                    return Config.homeUrl
+                    return this.homeName
                 }
-                return  navList[0].name
+                return  this.openNavList[0].name
             },
             handleTabRemove (name) {
                 this.tagNavList.forEach(item => {
@@ -118,6 +110,7 @@
                     }
                 })
                 if(this.currentTab === name){
+                    
                     let reName = this.getNextRoute(name)
                     this.$router.push({'name':reName})
                 }
@@ -138,18 +131,17 @@
         },
         watch: {
             '$route'(newRoute) {
-                console.log('$route(newRoute) {')
                 const { name, path, params, meta } = newRoute
                 this.currentTab = name
                 if(!this.checkNavList(name)){
                     let info = {"name": name, 'url':path, 'title': meta.menuName , 'icon': meta.icon,'isClose':true}
                     this.tagNavList.push(info)
                 }
-                this.setBreadCrumb(newRoute)
+                this.$store.dispatch('setBreadCrumb', newRoute)
             }
         },
         mounted () {
-            this.currentTab = Config.homeUrl
+            this.currentTab = Config.homeName
             this.$router.push({'name':Config.homeName})
             //初始化时加入首页
             this.tagNavList.push(this.getHomeInfo())
