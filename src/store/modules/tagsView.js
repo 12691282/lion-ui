@@ -37,7 +37,7 @@ const toFillChildren = (menuList, children) =>{
     });
 }
 
-const tagsView = {
+export default  {
 
     state: {
         tagNavList: [],
@@ -94,5 +94,3 @@ const tagsView = {
     }
 
 }
-
-export default tagsView

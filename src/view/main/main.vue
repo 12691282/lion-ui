@@ -62,9 +62,7 @@
                 menuList: this.$store.getters.menuList,
                 currentTab : null,
                 logoImg : LogoImg,
-                homeName : Config.homeName,
-                openNavList : [],
-                lastTableName : ''
+                homeName : Config.homeName
             }
         },
         computed :{
@@ -88,9 +86,8 @@
                 return {'name':this.homeName,'title': '首页' , 'icon':'md-home','isClose':true };
             },
             getNextRoute(name) {
-                const index = this.tagNavList.findIndex(item => item.name === name)
-                 this.openNavList  = this.tagNavList.filter(item => item.isClose === true)
-                if(this.openNavList.length === 0){
+                let openNavList  = this.tagNavList.filter(item => item.isClose === true)
+                if(openNavList.length === 0){
                     //只剩首页的时候， 关闭时需要延迟新增一个首页的table
                     if(name === this.homeName){
                         let self = this
@@ -100,7 +97,7 @@
                     }
                     return this.homeName
                 }
-                return  this.openNavList[0].name
+                return openNavList[0].name
             },
             handleTabRemove (name) {
                 this.tagNavList.forEach(item => {
@@ -110,11 +107,9 @@
                     }
                 })
                 if(this.currentTab === name){
-                    
                     let reName = this.getNextRoute(name)
                     this.$router.push({'name':reName})
                 }
-
             },
             onTagClick(name){
                 this.$router.push({'name':name})
@@ -142,9 +137,11 @@
         },
         mounted () {
             this.currentTab = Config.homeName
-            this.$router.push({'name':Config.homeName})
-            //初始化时加入首页
-            this.tagNavList.push(this.getHomeInfo())
+            if(this.tagNavList.length === 0){
+                this.$router.push({'name':Config.homeName})
+                //初始化时加入首页
+                this.tagNavList.push(this.getHomeInfo())
+            }
         }
     }
 </script>

@@ -173,7 +173,7 @@ const ajaxResourse = () => {
             {
                 id:4,
                 name: 'resource-manage',
-                path: '/resourceManage',
+                path: '/system/resourceManage',
                 meta:{
                     menuName:"资源管理",
                     icon: "ios-pricetags-outline"
@@ -182,8 +182,8 @@ const ajaxResourse = () => {
             },
             {
                 id:5,
-                name: 'menu-manage',
-                path: '/menuManage',
+                name: 'org-manage',
+                path: '/system/orgManage',
                 meta:{
                     menuName:"组织机构管理",
                     icon: "ios-aperture-outline"
@@ -193,7 +193,7 @@ const ajaxResourse = () => {
             {
                 id:6,
                 name: 'authority-manage',
-                path: '/authorityManage',
+                path: '/system/authorityManage',
                 meta:{
                     menuName:"权限管理",
                     icon: "ios-barcode"
@@ -203,7 +203,7 @@ const ajaxResourse = () => {
             {
                 id:7,
                 name: 'direction-manage',
-                path: '/directionManage',
+                path: '/system/directionManage',
                 meta:{
                     menuName:"字典管理",
                     icon: "ios-book-outline"
