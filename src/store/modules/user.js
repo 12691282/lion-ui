@@ -3,11 +3,14 @@
 
 export default {
 
-
     state: {
+        isLoginMark:false,
         token: '',
         user: {},
         roles: [],
+    },
+    getters: {
+        isLoginMark:(state, getter) => state.isLoginMark
     },
     mutations: {
 
@@ -19,9 +22,10 @@ export default {
         },
         SET_ROLES: (state, roles) => {
             state.roles = roles
+        },
+        SET_LOGIN_MARK: (state, isLogin) => {
+            state.isLoginMark = isLogin
         }
-
-
     },
     actions: {
     

@@ -247,4 +247,4 @@ const ajaxResourse = () => {
 ]
 
 
-export default ajaxResourse()
+export default defaultModuleList

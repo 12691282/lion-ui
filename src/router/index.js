@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
 import RouterList from './routerList'
 import iView from 'iview'
 import Ajax from '../config/ajax'
@@ -15,19 +16,35 @@ const router =  new Router({
 
 
 router.beforeEach((to, from, next) => {
-    iView.LoadingBar.start()
-    if (to.name === Config.loginUrl) {
- 
-    }
+  iView.LoadingBar.start()
+  debugger
+  if(store.getters.isLoginMark){
+     next()
+  }else{
+      Ajax.post({
+          url: "/account/getResourceList",
+          params: {},
+          notice: false,
+          success: result => {
+            console.log(result)
+          }
+      });
 
-    console.log(to)
+      next()
+  }
+
+   
+    
+
+
+    
 
   // if(to.path === config.loginUrl){
   //     next({
   //         name: config.loginUrl // 跳转到登录页
   //     })
   // }
-  next()
+
 })
 
 router.afterEach(to => {

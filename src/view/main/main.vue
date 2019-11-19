@@ -32,7 +32,9 @@
                               :animated="false"
                               @on-tab-remove="handleTabRemove"
                               @on-click="onTagClick"  >
-                            <tab-pane :label="tag.title" :name="tag.name" v-if="tag.isClose" :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList" :key="tagIndex" >
+                            <tab-pane :label="tag.title" :name="tag.name" 
+                                    :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList"
+                                     :key="tagIndex" v-if="tag.isClose">
                             </tab-pane>
                         </Tabs>
                         <Card>
@@ -59,7 +61,6 @@
         },
         data () {
             return {
-                menuList: this.$store.getters.menuList,
                 currentTab : null,
                 logoImg : LogoImg,
                 homeName : Config.homeName
@@ -68,14 +69,17 @@
         computed :{
             tagNavList : {
                 get () {
-                    return this.$store.state.tagsView.tagNavList
+                    return this.$store.getters.tagNavList
                 },
                 set (val) {
                     this.$store.commit('setTagNavList', {key:'tagsView',vulue})
                 }
             },
             breadcrumbList() {
-                return this.$store.state.tagsView.breadcrumbList
+                return this.$store.getters.breadcrumbList
+            },
+            menuList (){
+                return this.$store.getters.menuList
             }
         },
         methods: {
