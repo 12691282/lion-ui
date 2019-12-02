@@ -16,7 +16,7 @@
       </FormItem>
     </Form>
 
-    <TreeTable :items='list'  :columns='columnsTitle'>
+    <TreeTable :items='treeTableDatalist'  :columns='columnsTitle'>
          <template slot-scope="{ data }" slot="action">
             <Button type="primary" size="small" @click="addChildRecord(data)">增加子节点</Button>
             <Button type="primary" size="small" @click="editRecord(data)">修改</Button>
@@ -46,7 +46,7 @@
             <Input v-model="resourceModel.pname" style="width: 286px;" placeholder="选择上级资源" />
             <div class="api" slot="content">
               <Tree
-                :data="selectTree"
+                :data="rootTreeNode"
                 ref="higherUpsTree"
                 readonly
                 @on-select-change="selectHigherUps"
@@ -124,7 +124,7 @@ export default {
   components: {TreeTable},
   data() {
     return {
-      selectTree: [],
+      rootTreeNode:[{'title':'系统菜单', 'value': null, 'expand':true, children:[]}],
       higherUpsList: [],
       resourceTypeList: [
         { value: 0, label: "菜单" },
@@ -173,7 +173,7 @@ export default {
           align: "center"
         }
       ],
-      list: [],
+      treeTableDatalist: [],
       index: 1
     };
   },
@@ -190,10 +190,10 @@ export default {
         params: params,
         notice: false,
         success: result => {
-          this.list = result.data;
-          if (this.list.length > 0) {
-              this.selectTree = [];
-              this.fillSelectTree(this.list, this.selectTree);
+          this.treeTableDatalist = result.data;
+          if (this.treeTableDatalist.length > 0) {
+              this.rootTreeNode[0]['children'] = [];
+              this.fillSelectTree(this.treeTableDatalist, this.rootTreeNode[0]['children']);
           }
         }
       });

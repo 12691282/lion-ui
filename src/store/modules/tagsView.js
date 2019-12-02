@@ -1,51 +1,10 @@
-import RouterList from '@/router/routerList'
-
-
-const getRouterList = () => {
-    let list = [];
-    RouterList.forEach(obj =>{
-        let meta = obj.meta;
-        if(meta.hideMenu){
-            return true;
-        }
-        let children = obj.children;
-        let menuObj={
-            menuId:obj.name,
-            icon:meta.icon,
-            menuName: meta.menuName
-        }
-
-        list.push(menuObj)
-        if(children && children.length > 0){
-            menuObj.children = [];
-            toFillChildren(menuObj.children ,children);
-        }
-    });
-
-    return list
-}
-
-const toFillChildren = (menuList, children) =>{
-    children.forEach(obj =>{
-        let meta = obj.meta;
-        let menuObj={
-            menuId:obj.name,
-            icon:meta.icon,
-            menuName: meta.menuName
-        }
-        menuList.push(menuObj)
-    });
-}
-
-export default  {
+ export default  {
 
     state: {
         tagNavList: [],
-        breadcrumbList : [],
-        menuList: getRouterList()
+        breadcrumbList : []
     },
     getters:{
-        menuList:(state, getter) => state.menuList,
         breadcrumbList:(state, getter) => state.breadcrumbList,
         tagNavList:(state, getter) => state.tagNavList
     },

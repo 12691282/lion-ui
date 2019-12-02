@@ -28,7 +28,9 @@ export default {
         }
     },
     actions: {
-    
+        setUserLoginTrue: ({commit}) => {
+            commit('SET_LOGIN_MARK', true)
+        }
     }
 
 }

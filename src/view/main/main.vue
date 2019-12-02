@@ -5,15 +5,19 @@
                 <img style="margin-left: 20px; margin-top: 10px;" :src="logoImg"/>
             </div>
             <Menu  theme="dark" width="auto" @on-select="selectMenu">
-                <menu-item   name="home">
+                <!-- <menu-item   name="home">
                     <Icon type="md-home" />首页
-                </menu-item>
+                </menu-item> -->
                 <template v-for="item in menuList" >
-                    <Submenu :name="`${item.menuId}+''`" :key="item.menuId">
+
+                    <menu-item v-if="!item.children" :name="`${item.menuId}`"  :key="item.menuId">
+                            <Icon :type="item.icon"  />{{item.menuName}}
+                    </menu-item>
+                    <Submenu v-else-if="item.children && item.children.length > 1" :name="`${item.menuId}+''`" :key="item.menuId">
                         <template slot="title">
                             <Icon :type="item.icon" />{{item.menuName}}
                         </template>
-                        <template v-if="item.children && item.children.length > 1">
+                        <template >
                                 <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.menuId}`">
                                     <Icon :type="child.icon"  />{{child.menuName}}
                                 </menu-item>

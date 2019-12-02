@@ -1,18 +1,40 @@
 import Login from '@/view/login/login'
 import Main from '@/view/main'
 import Config from '@/config'
-import Ajax from '@/config/ajax'
 
 /****
  *  数据说明：
  *  因为$route 属性里有meta顾自定义此meta字段
  *
- *
- *
  */
 
+export const MenuList = {
+    name: "main",
+    path: '/main',
+    component: Main,
+    children:[
+        {
+            id:2,
+            name: Config.homeName,
+            path: Config.homeUrl,
+            meta:{
+                menuName:"首页",
+                icon: "md-home"
+            },
+            component: () => import('@/view/system/home')
+        }],
+    beforeEnter (to, from, next) {
+        console.log(to)
+        // let token = Vue.cookie.get('token');
+        // if (!token || !/\S/.test(token)) {
+        //     next({ name: 'login' });
+        // }
+        next();
+    }
+}
 
-let defaultModuleList = [{
+
+export const routerList = [{
     name: 'root',
     path: '/',
     redirect : '/' +Config.loginUrl,
@@ -28,83 +50,10 @@ let defaultModuleList = [{
         hideMenu: true
     }
 },
-{
-    name: "main",
-    path: '/main',
-    component: Main,
-    meta:{
-        hideMenu: true
-    },
-    children:[
-        {
-            id:2,
-            name: Config.homeName,
-            path: Config.homeUrl,
-            meta:{
-                menuName:"首页",
-                icon: "md-home"
-            },
-            component: () => import('@/view/system/home')
-        }]
-}]
+    MenuList
+]
 
 
-
-// let path = '@/view'+item.resourceUrl
-const ajaxResourse = () => {
-
-
-    // let fillToModuleInfo = item => {
-    //     if(!item.resourceUrl){
-    //            return 
-    //     }
-    //     let name = item.resourceUrl.replace('/', '-')
-    
-    //     let module = {
-    //         name,
-    //         id:item.id,
-    //         path: '/'+item.resourceUrl,
-    //         mata:{
-    //             menuName: item.resourceName
-    //         }
-    //     }
-    //     return module
-    // }
-
-    // Ajax.post({
-    //     url: "/account/getResourceList",
-    //     params: {},
-    //     notice: false,
-    //     success: result => {
-    //         let data = result.data
-    //         if(data.length === 0){
-    //             return 
-    //         }
-    //         for(let item of data){
-    //             let module = fillToModuleInfo(item)
-    //             if(module){
-    //                 module.component = Main
-    //                 if(item.children.length > 0){
-    //                     let childrenArr = []
-    //                     for(let child of item.children){
-    //                         let cModule = fillToModuleInfo(child)
-    //                         childrenArr[childrenArr.length] = cModule
-    //                     }
-    //                     module.children = childrenArr;
-    //                 } 
-    //                 defaultModuleList.push(module)
-    //             }
-              
-    //         }
-        
-    //     }
-    // });
-   
-    return list //defaultModuleList
-}
-
-
-// export default [
     let list = [{
         name: '',
         path: '/',
@@ -247,4 +196,6 @@ const ajaxResourse = () => {
 ]
 
 
-export default defaultModuleList
+// export default defaultModuleList
+
+ 
