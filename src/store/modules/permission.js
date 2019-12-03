@@ -1,4 +1,4 @@
-import {routerList,MenuList} from '../../router/routerList'
+import {routerList,MenuList, BeforeEnter} from '../../router/routerList'
 
 
 const setMenuListConst = (_routerList) => {
@@ -92,7 +92,6 @@ export default {
               let rList = [];
               setMemuFromResource(resourceList, menuList, rList)
               commit('SET_MENU_LIST', menuList)
-              
               MenuList.name = 'root-dynamic';
               MenuList.children = rList;
               let routerArr = [
@@ -139,6 +138,7 @@ const fillMenuObj = (resource) =>{
         'menuName' :resource['resourceName'] ,
         'icon' :  resource['icon'] || 'md-person-add'
     }
+    menuObj['beforeEnter'] = BeforeEnter
     return menuObj
 }
 

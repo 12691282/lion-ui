@@ -30,6 +30,9 @@
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
                 <breadcrumb-nav :breadcrumb-list="breadcrumbList"></breadcrumb-nav>
             </Header>
+            <div style="position: absolute;left: 1200px;top: 25px;">
+                <font style="cursor: pointer;" @click="logoutAccount">登出</font>
+            </div>
             <Content class="main-content-con" >
                 <Layout class="main-layout-con" >
                         <Tabs type="card" closable :value="currentTab"
@@ -44,7 +47,6 @@
                         <Card>
                             <router-view />
                         </Card>
-
                 </Layout>
             </Content>
         </Layout>
@@ -67,7 +69,8 @@
             return {
                 currentTab : null,
                 logoImg : LogoImg,
-                homeName : Config.homeName
+                homeName : Config.homeName,
+                autoWidth: ""
             }
         },
         computed :{
@@ -130,6 +133,16 @@
                     }
                 }
                 return false;
+            },
+            logoutAccount(){
+                this.$Modal.confirm({
+                    title: '确认!',
+                    content: '<p>退出登录？</p>',
+                    onOk: () => {
+                        this.$cookie.set('token', '')
+                    },
+                    cancelText: '取消'
+                });
             }
         },
         watch: {
@@ -150,6 +163,8 @@
                 //初始化时加入首页
                 this.tagNavList.push(this.getHomeInfo())
             }
+          
+
         }
     }
 </script>

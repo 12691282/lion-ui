@@ -1,6 +1,7 @@
 import Login from '@/view/login/login'
 import Main from '@/view/main'
 import Config from '@/config'
+import Cookies from 'js-cookie'
 
 /****
  *  数据说明：
@@ -22,17 +23,12 @@ export const MenuList = {
                 menuName:"首页",
                 icon: "md-home"
             },
-            component: () => import('@/view/system/home')
-        }],
-    beforeEnter (to, from, next) {
-        console.log(to)
-        // let token = Vue.cookie.get('token');
-        // if (!token || !/\S/.test(token)) {
-        //     next({ name: 'login' });
-        // }
-        
-        next();
-    }
+            component: () => import('@/view/system/home'),
+            beforeEnter:(to, from, next)=>{
+                BeforeEnter(to, from, next)
+            }
+        }]
+   
 }
 
 
@@ -46,6 +42,15 @@ export const routerList = [
     }
 }]
 
+export const BeforeEnter = (to, from, next) => {
+    let token = Cookies.get('token');
+
+    if (!token || !/\S/.test(token)) {
+        next({ name: 'login' });
+    }
+    
+    next();
+}
 
     let list = [{
         name: '',

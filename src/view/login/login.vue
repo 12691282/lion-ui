@@ -19,7 +19,6 @@
         name: "",
         data() {
             return {
-                msg: "Hello Vue.js"
             }
         },
         methods:{
@@ -34,6 +33,8 @@
                     params: params,
                     notice: false,
                     success: result => {
+                        let data = result.data;
+                        this.$cookie.set('token', data.token)
                           this.$router.push({
                              name: Config.homeName
                           })
