@@ -10,8 +10,9 @@ import Config from '@/config'
 
 export const MenuList = {
     name: "main",
-    path: '/main',
-    component: Main,
+    path: '/',
+    redirect : '/' +Config.loginUrl,
+    component: () => import('@/view/main'),
     children:[
         {
             id:2,
@@ -29,19 +30,13 @@ export const MenuList = {
         // if (!token || !/\S/.test(token)) {
         //     next({ name: 'login' });
         // }
+        
         next();
     }
 }
 
 
-export const routerList = [{
-    name: 'root',
-    path: '/',
-    redirect : '/' +Config.loginUrl,
-    meta:{
-        hideMenu: true
-    }
-},
+export const routerList = [
 {
     name:  Config.loginUrl,
     path: '/' + Config.loginUrl,
@@ -49,9 +44,7 @@ export const routerList = [{
     meta:{
         hideMenu: true
     }
-},
-    MenuList
-]
+}]
 
 
     let list = [{

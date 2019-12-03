@@ -39,12 +39,14 @@ const toFillChildren = (menuList, children) =>{
 export default {
 
     state: {
-        routerList: routerList,
+        routerList: routerList.concat(MenuList),
         menuList : [],
+        breadcrumbList : []
     },
     getters: {
         routerList:(state, getter) => state.routerList,
         menuList:(state, getter) => state.menuList,
+        breadcrumbList:(state, getter) => state.breadcrumbList
     },
     mutations: {
         SET_ROUTER_LIST: (state, routerList) => {
@@ -52,8 +54,29 @@ export default {
         },
         SET_MENU_LIST: (state, list) => {
             let rootMenu =  MenuList['children'].concat(list)
-            state.routerList = rootMenu
             state.menuList  = setMenuListConst(rootMenu)
+        },
+        SET_BREAD_CRUMB(state, route){
+            let routeName = route.name
+            let arr = []
+            state.menuList.forEach(menu =>{
+                let childrenList = menu.children;
+                if(childrenList){
+                    for(let childMenu of childrenList){
+                        if(childMenu.menuId === routeName){
+                            arr.push({
+                                'name':menu.menuName
+                            })
+                            arr.push({
+                                'name':childMenu.menuName
+                            })
+                        }
+                    }
+                }
+
+
+            })
+           state.breadcrumbList = arr
         }
     },
     actions: {
@@ -66,28 +89,40 @@ export default {
         setResourceList({ commit, state }, resourceList) {
             return new Promise(resolve => {
               let menuList = [];
-              setMemuFromResource(resourceList, menuList)
+              let rList = [];
+              setMemuFromResource(resourceList, menuList, rList)
               commit('SET_MENU_LIST', menuList)
+              
+              MenuList.name = 'root-dynamic';
+              MenuList.children = rList;
+              let routerArr = [
+                { path: '*', redirect: '/404', hidden: true },
+                MenuList
+              ]
               resolve({
-                routerList: [state.routerList],
+                routerList: routerArr,
               })
             })
-          },
-        
+        },
+        setBreadCrumb({commit}, route){
+            commit('SET_BREAD_CRUMB', route)
+        }
 
     }
 
 }
 
-const setMemuFromResource = (resourceList,  menuList)=>{
+const setMemuFromResource = (resourceList,  menuList, rList)=>{
     for(let resource of resourceList){
         let menuObj = fillMenuObj(resource)
         let children = resource['children']
         if(children && children.length > 0){
             menuObj['children'] = []
-            setMemuFromResource(children, menuObj['children'])
+            setMemuFromResource(children, menuObj['children'], rList)
         }
         menuList.push(menuObj)
+        rList.push(fillMenuObj(resource))
+     
     }
 
 }
