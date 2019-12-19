@@ -32,6 +32,9 @@ router.beforeEach((to, from, next) => {
                   router.addRoutes(asyncRouter)
               })
             }
+          },
+          failure:error => {
+              console.log('login')
           }
       });
       next()

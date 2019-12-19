@@ -10,9 +10,6 @@
       <FormItem style="margin-left: -30px;">
         <Button type="primary" @click="querySubmit()">查询</Button>
       </FormItem>
-      <FormItem style="margin-left: -50px;">
-        <Button type="success" @click="addNew()">新增</Button>
-      </FormItem>
     </Form>
 
     <Table border :columns="columnsTitle" :data="list">
@@ -21,10 +18,7 @@
       </template>
       <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small"  @click="editRecord(index)">修改</Button>
-        <Button type="warning" size="small" v-if="row.recordStatus == 0" @click="stopRecord(index)">停用</Button>
-        <Button type="success" size="small" v-if="row.recordStatus == 1" @click="startRecord(index)">启用</Button>
-        <Button type="error" size="small"  v-if="row.recordStatus == 1" @click="deleteRecord(index)" >删除</Button>
+        <Button type="warning" size="small"  @click="stopRecord(index)">授权</Button>
       </template>
     </Table>
     <Page
@@ -194,34 +188,27 @@ export default {
         },
         {
           title: "名字",
-          width: 100,
+          width: 140,
           slot: "name"
         },
         {
           title: "账号名",
+           width: 160,
           key: "accountName"
         },
         {
-          title: "email",
-          key: "email"
-        },
-        {
-          title: "状态",
-          width: 70,
-          key: "statusName"
-        },
-        {
-          title: "备注",
+          title: "拥有角色",
           key: "backup"
         },
         {
           title: "操作",
           slot: "action",
+          width: 120,
           align: "center"
         }
       ],
       list: [],
-      size: 5,
+      size: 10,
       total: 0,
       index: 1
     };

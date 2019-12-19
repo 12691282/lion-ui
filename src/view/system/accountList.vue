@@ -22,9 +22,9 @@
       <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
       <template slot-scope="{ row, index }" slot="action">
         <Button type="primary" size="small"  @click="editRecord(index)">修改</Button>
-        <Button type="warning" size="small" v-if="row.recordStatus == 0" @click="stopRecord(index)">停用</Button>
-        <Button type="success" size="small" v-if="row.recordStatus == 1" @click="startRecord(index)">启用</Button>
-        <Button type="error" size="small"  v-if="row.recordStatus == 1" @click="deleteRecord(index)" >删除</Button>
+        <Button type="warning" size="small" v-if="row.recordState == 0" @click="stopRecord(index)">停用</Button>
+        <Button type="success" size="small" v-if="row.recordState == 1" @click="startRecord(index)">启用</Button>
+        <Button type="error" size="small"  v-if="row.recordState == 1" @click="deleteRecord(index)" >删除</Button>
       </template>
     </Table>
     <Page
@@ -204,7 +204,7 @@ export default {
         {
           title: "状态",
           width: 70,
-          key: "statusName"
+          key: "stateName"
         },
         {
           title: "备注",

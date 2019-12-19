@@ -1,104 +1,91 @@
 <template>
   <div>
-    <Form :model="searchItem" :label-width="60" ref="searchItem" inline :rules="searchRules">
-      <FormItem label="名字">
-        <Input v-model="searchItem.name" placeholder="请输入名字..." style="width: auto" />
-      </FormItem>
-      <FormItem label="账号名">
-        <Input v-model="searchItem.accountName  " placeholder="请输入账号名..." style="width: auto" />
+    <Form :label-width="80" inline>
+      <FormItem label="组织机构名字"  :label-width="110" >
+        <Input
+          v-model="orgName"
+          maxlength="24"
+           width="160px"
+          placeholder="请输入组织机构名字..."
+        />
       </FormItem>
       <FormItem style="margin-left: -30px;">
         <Button type="primary" @click="querySubmit()">查询</Button>
       </FormItem>
-      <FormItem style="margin-left: -50px;">
+      <FormItem style="margin-left: -60px;">
         <Button type="success" @click="addNew()">新增</Button>
       </FormItem>
     </Form>
 
-    <Table border :columns="columnsTitle" :data="list">
-      <template slot-scope="{ row }" slot="name">
-        <strong>{{ row.name }}</strong>
-      </template>
-      <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
-      <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small"  @click="editRecord(index)">修改</Button>
-        <Button type="warning" size="small" v-if="row.recordStatus == 0" @click="stopRecord(index)">停用</Button>
-        <Button type="success" size="small" v-if="row.recordStatus == 1" @click="startRecord(index)">启用</Button>
-        <Button type="error" size="small"  v-if="row.recordStatus == 1" @click="deleteRecord(index)" >删除</Button>
-      </template>
-    </Table>
-    <Page
-      style="margin-top: 10px"
-      :total="total"
-      :page-size="size"
-      @on-change="changePageEvent"
-      show-elevator
-      show-total
-    />
+    <TreeTable :items='treeTableDatalist'  :columns='columnsTitle'>
+         <template slot-scope="{ data }" slot="action">
+            <Button type="primary" size="small" v-if="data.state == 0" @click="addChildRecord(data)">增加子节点</Button>
+            <Button type="primary" size="small" @click="editRecord(data)">修改</Button>
+            <Button type="success" size="small"  v-if="data.state == 1" @click="changeState(data, 0)">启用</Button>
+            <Button type="error" size="small"    v-if="data.state == 0" @click="changeState(data, 1)">停用</Button>
+         </template>
+    </TreeTable>
 
-    <Modal draggable scrollable v-model="isDisplay" :style="{top: '20px'}" :mask-closable="false">
+    <Modal
+      scrollable
+      :closable="false"
+      width="400px;"
+      v-model="isDisplay"
+      :style="{top: '20px'}"
+      :mask-closable="false"
+    >
       <p slot="header">
-        <span>{{titleName}}</span>
+        <span>{{titleName}}</span>z
       </p>
-      <Form ref="accountModel" :model="accountModel" :label-width="80" :rules="accountModelRules">
-        <FormItem label="名字" prop="name">
+      <Form
+        ref="resourceModel"
+        :model="orgModel"
+        :label-width="80"
+        :rules="resourceModelRules"
+      >
+        <FormItem label="上级资源">
+          <Poptip placement="bottom-start">
+            <Input v-model="orgModel.pname" style="width: 286px;" placeholder="选择上级资源" />
+            <div class="api" slot="content">
+              <Tree
+                :data="rootTreeNode"
+                ref="higherUpsTree"
+                readonly
+                @on-select-change="selectHigherUps"
+              ></Tree>
+            </div>
+          </Poptip>
+        </FormItem>
+
+        <FormItem  label="组织机构名字" :label-width="110" prop="organizationName">
           <Input
             type="text"
-            v-model="accountModel.name"
-            maxlength="10"
-            show-word-limit
-            placeholder="请输入名字"
-          />
-        </FormItem>
-        <FormItem label="账号名" prop="accountName">
-          <Input
-            type="text"
-            v-model="accountModel.accountName"
-            maxlength="18"
-            show-word-limit
-            placeholder="请输入账号名"
-          />
-        </FormItem>
-        <FormItem label="密码" prop="password">
-          <Input
-            type="password"
-            v-model="accountModel.password"
+            v-model="orgModel.organizationName"
             maxlength="24"
-            password
-            placeholder="请输入密码"
-          />
-        </FormItem>
-        <FormItem label="确认密码" prop="confirmPassword">
-          <Input
-            type="password"
-            v-model="accountModel.confirmPassword"
-            maxlength="24"
-            password
-            placeholder="请输入确认密码"
-          />
-        </FormItem>
-        <FormItem label="E-mail" prop="email">
-          <Input
-            type="text"
-            v-model="accountModel.email"
-            maxlength="30"
             show-word-limit
-            placeholder="请输入e-mail"
+            placeholder="请输入组织机构名字"
           />
         </FormItem>
-        <FormItem label="备注" prop="backup">
+        <FormItem label="描述" prop="description">
           <Input
             type="textarea"
-            v-model="accountModel.backup"
+            v-model="orgModel.description"
             :rows="2"
             maxlength="50"
             show-word-limit
             placeholder="请输入备注"
           />
         </FormItem>
+        <FormItem label="状态" prop="state">
+            <RadioGroup v-model="orgModel.state">
+                <Radio label="0">启用</Radio>
+                <Radio label="1">停用</Radio>
+            </RadioGroup>
+        </FormItem>
+ 
       </Form>
       <div slot="footer">
-        <Button @click="isDisplay = false">取消</Button>
+        <Button @click="cancelInput()">取消</Button>
         <Button @click="handleReset()" style="margin-left: 8px">重置</Button>
         <Button type="primary" @click="submitData">确定</Button>
       </div>
@@ -107,112 +94,45 @@
 </template>
 
 <script>
+import TreeTable from '@/components/tree-table'
+import Config from "../../config";
+
 export default {
-  name: "",
+  name: "resourceList",
+  components: {TreeTable},
   data() {
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        if (this.accountModel.confirmPassword !== "") {
-          // 对第二个密码框单独验证
-          this.$refs.accountModel.validateField("confirmPassword");
-        }
-        callback();
-      }
-    };
-    const validatePassCheck = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入确认密码"));
-      } else if (value !== this.accountModel.password) {
-        callback(new Error("两次输入密码不一直!"));
-      } else {
-        callback();
-      }
-    };
     return {
+      rootTreeNode:[{'title':'组织机构菜单', 'value': null, 'expand':true, children:[]}],
+      higherUpsList: [],
       isDisplay: false,
       titleName: "",
-      accountModel: {
+      orgName: "",
+      orgModel: {
         id: "",
-        name: "",
-        accountName: "",
-        password: "",
-        confirmPassword: "",
-        email: "",
-        backup: ""
+        pid: "",
+        pname: "",
+        organizationName: "",
+        description:"",
+        state: "0"
       },
-      searchItem: {
-        name: "",
-        accountName: ""
-      },
-      searchRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ]
-      },
-      accountModelRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ],
-        password: [
-          { required: true, validator: validatePass, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        confirmPassword: [
-          { required: true, validator: validatePassCheck, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        email: [
-          { required: true, message: "请输入e-mail", trigger: "blur" },
-          { type: "email", message: "email格式不正确", trigger: "blur" }
+      resourceModelRules: {
+        roleName: [
+          { required: true, message: "请输入组织机构名字.", trigger: "blur" }
         ]
       },
       columnsTitle: [
         {
-          type: "selection",
-          width: 60,
-          align: "center"
+          title: "组织机构名字",
+          width: 80,
+          key: "organizationName"
         },
-        {
-          title: "序号",
-          width: 70,
-          align: "center",
-          slot: "number"
-        },
-        {
-          title: "名字",
-          width: 100,
-          slot: "name"
-        },
-        {
-          title: "账号名",
-          key: "accountName"
-        },
-        {
-          title: "email",
-          key: "email"
+      {
+          title: "描述",
+          key: "description"
         },
         {
           title: "状态",
-          width: 70,
-          key: "statusName"
-        },
-        {
-          title: "备注",
-          key: "backup"
+          key: "stateName"
         },
         {
           title: "操作",
@@ -220,93 +140,91 @@ export default {
           align: "center"
         }
       ],
-      list: [],
-      size: 5,
-      total: 0,
-      index: 1
+      treeTableDatalist: []
     };
   },
   methods: {
-    getList() {
-      let params = {
-        name: this.searchItem.name,
-        accountName: this.searchItem.accountName,
-        size: this.size,
-        index: this.index
-      };
+    querySubmit() {
+      this.getList({"organizationName": this.orgName});
+    },
+    getList(_param) {
+       let params = {}
+       if(_param){
+         params = _param
+       } 
 
       this.$ajax.post({
-        url: "/account/getInfo",
+        url: "/organization/getInfoPageList",
         params: params,
         notice: false,
         success: result => {
-          let page = result.data;
-          this.list = page.list;
-          this.total = page.total;
+          this.treeTableDatalist = result.data;
+          if (this.treeTableDatalist.length > 0) {
+              this.rootTreeNode[0]['children'] = [];
+              this.fillSelectTree(this.treeTableDatalist, this.rootTreeNode[0]['children']);
+          }else{
+            this.treeTableDatalist  = []
+          }
         }
       });
     },
-    editRecord(index) {
-      this.titleName = "修改";
-      let rowRocord = this.list[index];
-      this.$refs.accountModel.resetFields();
-      let newObj = {};
-      for (let indx in rowRocord) {
-        newObj[indx] = rowRocord[indx];
+    fillSelectTree(listTree, selectTree) {
+      for(let item of listTree){
+          let node = {};
+          node['title'] = item['organizationName'];
+          node['value'] = item['id'];
+          node['expand'] =  true;
+          let children = item['children']
+          if(children.length > 0){
+            node['children'] = [];
+            node['isLeaf'] = false
+            this.fillSelectTree(children, node['children'])
+          }else{
+            node['isLeaf'] = true
+          }
+          selectTree.push(node)
+          
       }
-      this.accountModel = newObj;
+    },
+    editRecord(record) {
+      this.titleName = "修改";
+      this.$refs.resourceModel.resetFields();
+      let newObj = {};
+      for (let indx in this.orgModel) {
+        newObj[indx] = record[indx];
+      }
+      this.orgModel = newObj;
+      this.orgModel.pid = newObj.pid;
+      this.orgModel.pname = newObj.pname;
       this.isDisplay = true;
     },
-    stopRecord(index) {
-      let params = {
-        id: this.list[index].id
-      };
-      this.$ajax.post({
-        url: "/account/stopUseById",
-        params: params,
-        success: result => {
-          this.reloadList();
-        }
-      });
-    },
-    startRecord(index) {
-      let params = {
-        id: this.list[index].id
-      };
-      this.$ajax.post({
-        url: "/account/startUseById",
-        params: params,
-        success: result => {
-          this.reloadList();
-        }
-      });
-    },
-    deleteRecord(index) {
-      let record = this.list[index]
+    changeState(record, stateNo) {
+      let contentStr = stateNo === 0 ? '<p>是否启用:' : '<p>是否停用:'
+      contentStr += record.organizationName +' </p>'
       this.$Modal.confirm({
-          title: '删除确认!',
-          content: '<p>是否删除 '+record.name+' 的账号</p>',
-          onOk: () => {
-              let params = {
-                id: record.id
-              };
-              this.$ajax.post({
-                  url: "/account/deleteRecordById",
-                  params: params,
-                  success: result => {
-                    this.reloadList();
-                  }
-              });
-          },
-          cancelText: '取消'
+        title: "操作确认!",
+        content: contentStr,
+        onOk: () => {
+          let params = {
+            id: record.id,
+            state:stateNo
+          };
+          this.$ajax.post({
+            url: "/organization/saveOrUpdate",
+            params: params,
+            success: result => {
+              this.reloadList();
+            }
+          });
+        },
+        cancelText: "取消"
       });
     },
-    querySubmit() {
-      this.getList();
-    },
-    changePageEvent(currentIndex) {
-      this.index = currentIndex;
-      this.getList();
+    addChildRecord(data) {
+      this.handleReset();
+      this.orgModel.pid = data.id;
+      this.orgModel.pname = data.organizationName;
+      this.isDisplay = true;
     },
     addNew() {
       this.titleName = "新增";
@@ -314,11 +232,11 @@ export default {
       this.isDisplay = true;
     },
     submitData() {
-      this.$refs.accountModel.validate(valid => {
+      this.$refs.resourceModel.validate(valid => {
         if (valid) {
-          let params = this.accountModel;
+          let params = this.orgModel;
           this.$ajax.post({
-            url: "/account/saveOrUpdate",
+            url: "/organization/saveOrUpdate",
             params: params,
             success: result => {
               this.reloadList();
@@ -327,17 +245,36 @@ export default {
         }
       });
     },
-    handleReset(name) {
-      this.$refs.accountModel.resetFields();
+    cancelInput() {
+      this.handleReset();
+      this.isDisplay = false;
+    },
+    handleReset() {
+      this.orgModel.id = null;
+      this.orgModel.pid = null;
+      this.orgModel.pname = null;
+      this.$refs.resourceModel.resetFields();
+      let selectedNodes = this.$refs.higherUpsTree.getSelectedNodes();
+      if (selectedNodes) {
+        for (let node of selectedNodes) {
+          node.selected = false;
+        }
+      }
     },
     reloadList() {
-      this.searchItem.name = "";
-      this.searchItem.accountName = "";
+      this.searchItem.roleName = "";
       this.getList();
       this.isDisplay = false;
+    },
+    selectHigherUps(_nodes) {
+      console.log(_nodes)
+      let node = _nodes[0];
+      if (node) {
+        this.orgModel.pid = node.value;
+        this.orgModel.pname = node.title;
+      }
     }
   },
-  components: {},
   mounted() {
     this.getList();
   }

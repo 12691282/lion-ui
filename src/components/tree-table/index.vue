@@ -94,6 +94,8 @@ export default {
                 } else {
                     this.checks = false
                 }
+            }else{
+                this.initItems = []
             }
             console.log(this.initItems)
         },
