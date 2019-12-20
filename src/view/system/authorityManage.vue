@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Form :model="searchItem" :label-width="60" ref="searchItem" inline :rules="searchRules">
+    <Form :model="searchItem" :label-width="60" ref="searchItem" inline>
       <FormItem label="名字">
         <Input v-model="searchItem.name" placeholder="请输入名字..." style="width: auto" />
       </FormItem>
@@ -18,7 +18,7 @@
       </template>
       <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="warning" size="small"  @click="stopRecord(index)">授权</Button>
+        <Button type="warning" size="small"  @click="toShowAuthorityList(index)">授权</Button>
       </template>
     </Table>
     <Page
@@ -30,71 +30,22 @@
       show-total
     />
 
-    <Modal draggable scrollable v-model="isDisplay" :style="{top: '20px'}" :mask-closable="false">
+    <Modal draggable scrollable v-model="isDisplay"  :mask-closable="false"
+        :style="{top: '90px'}">
+
       <p slot="header">
-        <span>{{titleName}}</span>
+        <span>授权角色列表</span>
       </p>
-      <Form ref="accountModel" :model="accountModel" :label-width="80" :rules="accountModelRules">
-        <FormItem label="名字" prop="name">
-          <Input
-            type="text"
-            v-model="accountModel.name"
-            maxlength="10"
-            show-word-limit
-            placeholder="请输入名字"
-          />
-        </FormItem>
-        <FormItem label="账号名" prop="accountName">
-          <Input
-            type="text"
-            v-model="accountModel.accountName"
-            maxlength="18"
-            show-word-limit
-            placeholder="请输入账号名"
-          />
-        </FormItem>
-        <FormItem label="密码" prop="password">
-          <Input
-            type="password"
-            v-model="accountModel.password"
-            maxlength="24"
-            password
-            placeholder="请输入密码"
-          />
-        </FormItem>
-        <FormItem label="确认密码" prop="confirmPassword">
-          <Input
-            type="password"
-            v-model="accountModel.confirmPassword"
-            maxlength="24"
-            password
-            placeholder="请输入确认密码"
-          />
-        </FormItem>
-        <FormItem label="E-mail" prop="email">
-          <Input
-            type="text"
-            v-model="accountModel.email"
-            maxlength="30"
-            show-word-limit
-            placeholder="请输入e-mail"
-          />
-        </FormItem>
-        <FormItem label="备注" prop="backup">
-          <Input
-            type="textarea"
-            v-model="accountModel.backup"
-            :rows="2"
-            maxlength="50"
-            show-word-limit
-            placeholder="请输入备注"
-          />
-        </FormItem>
-      </Form>
+
+       <Transfer
+        :titles ="authorityListTitles"
+        :data="roleDataList"
+        :target-keys="hadRoleIds"
+        :selected-keys="selectedRolesKey"
+        @on-change="handleChangeRole"></Transfer>
       <div slot="footer">
         <Button @click="isDisplay = false">取消</Button>
-        <Button @click="handleReset()" style="margin-left: 8px">重置</Button>
-        <Button type="primary" @click="submitData">确定</Button>
+        <Button type="primary" @click="confirmAndUpdateAuthority()" >确定</Button>
       </div>
     </Modal>
   </div>
@@ -104,75 +55,16 @@
 export default {
   name: "",
   data() {
-    const validatePass = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入密码"));
-      } else {
-        if (this.accountModel.confirmPassword !== "") {
-          // 对第二个密码框单独验证
-          this.$refs.accountModel.validateField("confirmPassword");
-        }
-        callback();
-      }
-    };
-    const validatePassCheck = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入确认密码"));
-      } else if (value !== this.accountModel.password) {
-        callback(new Error("两次输入密码不一直!"));
-      } else {
-        callback();
-      }
-    };
     return {
+      authorityListTitles: ['未授权角色', '已授权角色'],
+      roleDataList:[],
+      selectedRolesKey:[],
+      hadRoleIds: [],
       isDisplay: false,
-      titleName: "",
-      accountModel: {
-        id: "",
-        name: "",
-        accountName: "",
-        password: "",
-        confirmPassword: "",
-        email: "",
-        backup: ""
-      },
+
       searchItem: {
         name: "",
         accountName: ""
-      },
-      searchRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ]
-      },
-      accountModelRules: {
-        name: [{ required: true, message: "请输入姓名.", trigger: "blur" }],
-        accountName: [
-          { required: true, message: "请输入账号名.", trigger: "blur" }
-        ],
-        password: [
-          { required: true, validator: validatePass, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        confirmPassword: [
-          { required: true, validator: validatePassCheck, trigger: "blur" },
-          {
-            type: "string",
-            min: 6,
-            message: "密码长度最少6位",
-            trigger: "blur"
-          }
-        ],
-        email: [
-          { required: true, message: "请输入e-mail", trigger: "blur" },
-          { type: "email", message: "email格式不正确", trigger: "blur" }
-        ]
       },
       columnsTitle: [
         {
@@ -198,7 +90,7 @@ export default {
         },
         {
           title: "拥有角色",
-          key: "backup"
+          key: "roleNameList"
         },
         {
           title: "操作",
@@ -210,10 +102,14 @@ export default {
       list: [],
       size: 10,
       total: 0,
-      index: 1
+      index: 1,
+      authorityId:''
     };
   },
   methods: {
+    handleChangeRole (newTargetKeys, direction, moveKeys) {
+                this.hadRoleIds = newTargetKeys;
+    },
     getList() {
       let params = {
         name: this.searchItem.name,
@@ -223,7 +119,7 @@ export default {
       };
 
       this.$ajax.post({
-        url: "/account/getInfo",
+        url: "/authority/getPageList",
         params: params,
         notice: false,
         success: result => {
@@ -233,59 +129,49 @@ export default {
         }
       });
     },
-    editRecord(index) {
-      this.titleName = "修改";
-      let rowRocord = this.list[index];
-      this.$refs.accountModel.resetFields();
-      let newObj = {};
-      for (let indx in rowRocord) {
-        newObj[indx] = rowRocord[indx];
+    getRoleList(){
+      this.$ajax.post({
+        url: "/authority/getRoleList",
+        notice:false,
+        success: result => {
+          let dataList = result.data;
+          this.roleDataList = []
+          if(dataList.length > 0){
+             for(let item of dataList){
+                this.roleDataList.push({
+                      key: item.id.toString(),
+                      label: item.roleName
+                });
+             }
+          }
+        }
+      });
+    },
+    toShowAuthorityList(index) {
+      let rowData = this.list[index]
+      this.authorityId = rowData.id
+      let roleIdList = rowData['roleIdList']
+      if(roleIdList){
+          this.hadRoleIds = roleIdList.split(',')
+      }else{
+          this.hadRoleIds = []
       }
-      this.accountModel = newObj;
-      this.isDisplay = true;
+          this.isDisplay = true
     },
-    stopRecord(index) {
+    confirmAndUpdateAuthority(){
       let params = {
-        id: this.list[index].id
-      };
+        id : this.authorityId
+      }
+      if(this.hadRoleIds.length > 0){
+        params['roleIds'] = this.hadRoleIds
+      }
       this.$ajax.post({
-        url: "/account/stopUseById",
+        url: "/authority/updateAuthorityById",
         params: params,
         success: result => {
-          this.reloadList();
+            this.isDisplay = false
+            this.getList();
         }
-      });
-    },
-    startRecord(index) {
-      let params = {
-        id: this.list[index].id
-      };
-      this.$ajax.post({
-        url: "/account/startUseById",
-        params: params,
-        success: result => {
-          this.reloadList();
-        }
-      });
-    },
-    deleteRecord(index) {
-      let record = this.list[index]
-      this.$Modal.confirm({
-          title: '删除确认!',
-          content: '<p>是否删除 '+record.name+' 的账号</p>',
-          onOk: () => {
-              let params = {
-                id: record.id
-              };
-              this.$ajax.post({
-                  url: "/account/deleteRecordById",
-                  params: params,
-                  success: result => {
-                    this.reloadList();
-                  }
-              });
-          },
-          cancelText: '取消'
       });
     },
     querySubmit() {
@@ -294,42 +180,17 @@ export default {
     changePageEvent(currentIndex) {
       this.index = currentIndex;
       this.getList();
-    },
-    addNew() {
-      this.titleName = "新增";
-      this.handleReset();
-      this.isDisplay = true;
-    },
-    submitData() {
-      this.$refs.accountModel.validate(valid => {
-        if (valid) {
-          let params = this.accountModel;
-          this.$ajax.post({
-            url: "/account/saveOrUpdate",
-            params: params,
-            success: result => {
-              this.reloadList();
-            }
-          });
-        }
-      });
-    },
-    handleReset(name) {
-      this.$refs.accountModel.resetFields();
-    },
-    reloadList() {
-      this.searchItem.name = "";
-      this.searchItem.accountName = "";
-      this.getList();
-      this.isDisplay = false;
     }
   },
   components: {},
   mounted() {
     this.getList();
+    //获取所以角色列表
+    this.getRoleList();
   }
 };
 </script>
 
 <style scoped>
+
 </style>
