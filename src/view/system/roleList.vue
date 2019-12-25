@@ -18,6 +18,7 @@
       </template>
       <template slot-scope="{ row, index }" slot="number">{{ index + 1}}</template>
       <template slot-scope="{ row, index }" slot="action">
+        <Button type="success" size="small"  @click="resourceConfig(row)">资源配置</Button>
         <Button type="primary" size="small"  @click="editRecord(index)">修改</Button>
         <Button type="error" size="small"    @click="deleteRecord(index)" >删除</Button>
       </template>
@@ -62,6 +63,18 @@
         <Button type="primary" @click="submitData">确定</Button>
       </div>
     </Modal>
+
+
+     <Modal draggable scrollable v-model="resourceTreeModel" :style="{top: '20px'}" :mask-closable="false">
+      <p slot="header">
+        <span>资源配置</span>
+      </p>
+          <Tree :data="data2" show-checkbox></Tree>
+      <div slot="footer">
+        <Button @click="resourceTreeModel = false">取消</Button>
+        <Button type="primary" @click="submitData">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -73,6 +86,7 @@ export default {
   data() {
     return {
       isDisplay: false,
+      resourceTreeModel : false,
       titleName: "",
       roleModel: {
         id: "",
@@ -117,7 +131,41 @@ export default {
       list: [],
       size: Config.default_page_size,
       total: 0,
-      index: 1
+      index: 1,
+      data2: [
+                    {
+                        title: 'parent 1',
+                        expand: true,
+                        children: [
+                            {
+                                title: 'parent 1-1',
+                                expand: true,
+                                checked: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-1-1'
+                                    },
+                                    {
+                                        title: 'leaf 1-1-2',
+                                        checked: true
+                                    }
+                                ]
+                            },
+                            {
+                                title: 'parent 1-2',
+                                expand: true,
+                                children: [
+                                    {
+                                        title: 'leaf 1-2-1'
+                                    },
+                                    {
+                                        title: 'leaf 1-2-1'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
     };
   },
   methods: {
@@ -204,11 +252,27 @@ export default {
       this.searchItem.roleName = "";
       this.getList();
       this.isDisplay = false;
+    },
+    resourceConfig(_row) {
+      let params = {
+        roleId : _row.id
+      }
+      this.$ajax.post({
+        url: "/resource/getConfigTreeById",
+        notice: false,
+        params: params,
+        success: result => {
+          let resouceTreeData = result.data;
+          console.log(resouceTreeData)
+          this.resourceTreeModel = true
+        }
+      });
     }
   },
   components: {},
   mounted() {
     this.getList();
+     
   }
 };
 </script>
