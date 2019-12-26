@@ -32,7 +32,7 @@ export const MenuList = {
 }
 
 
-export const routerList = [
+export const RouterList = [
 {
     name:  Config.loginUrl,
     path: '/' + Config.loginUrl,

@@ -28,8 +28,8 @@ export default {
         }
     },
     actions: {
-        setUserLoginTrue: ({commit}) => {
-            commit('SET_LOGIN_MARK', true)
+        setUserLoginState: ({commit}, stateMark) => {
+            commit('SET_LOGIN_MARK', stateMark)
         }
     }
 

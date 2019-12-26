@@ -20,21 +20,20 @@ router.beforeEach((to, from, next) => {
      next()
   }else{
       Ajax.post({
-          url: "/account/getResourceList",
-          params: {},
+          url: "/resource/getAuthResourceList",
           notice: false,
           success: result => {
             let resourceList = result.data
             if(resourceList && resourceList.length > 0){
                 store.dispatch('setResourceList', resourceList).then(res => {
-                  store.dispatch('setUserLoginTrue')
+                  store.dispatch('setUserLoginState', true)
                   let asyncRouter = res.routerList
                   router.addRoutes(asyncRouter)
               })
             }
           },
           failure:error => {
-              console.log('login')
+              console.log('router beforeEach error')
           }
       });
       next()

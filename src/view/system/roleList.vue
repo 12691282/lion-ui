@@ -69,10 +69,10 @@
       <p slot="header">
         <span>资源配置</span>
       </p>
-          <Tree :data="data2" show-checkbox></Tree>
+          <Tree ref="resourceTreeRef" :data="resourceTreeData" show-checkbox></Tree>
       <div slot="footer">
         <Button @click="resourceTreeModel = false">取消</Button>
-        <Button type="primary" @click="submitData">确定</Button>
+        <Button type="primary" @click="submitConfigTreeData">确定</Button>
       </div>
     </Modal>
   </div>
@@ -132,40 +132,8 @@ export default {
       size: Config.default_page_size,
       total: 0,
       index: 1,
-      data2: [
-                    {
-                        title: 'parent 1',
-                        expand: true,
-                        children: [
-                            {
-                                title: 'parent 1-1',
-                                expand: true,
-                                checked: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-1-1'
-                                    },
-                                    {
-                                        title: 'leaf 1-1-2',
-                                        checked: true
-                                    }
-                                ]
-                            },
-                            {
-                                title: 'parent 1-2',
-                                expand: true,
-                                children: [
-                                    {
-                                        title: 'leaf 1-2-1'
-                                    },
-                                    {
-                                        title: 'leaf 1-2-1'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+      resourceTreeData: [],
+      editRoleId : ''
     };
   },
   methods: {
@@ -254,6 +222,7 @@ export default {
       this.isDisplay = false;
     },
     resourceConfig(_row) {
+      this.editRoleId = _row.id
       let params = {
         roleId : _row.id
       }
@@ -262,9 +231,62 @@ export default {
         notice: false,
         params: params,
         success: result => {
-          let resouceTreeData = result.data;
-          console.log(resouceTreeData)
+          let treeData = result.data;
+          this.resourceTreeData = []
+          if(treeData && treeData.length > 0){
+              for(let treeItem of treeData){
+                 let node = {};
+                 node['title'] = treeItem['resourceName'];
+                 node['value'] = treeItem['id'];
+                 node['expand'] =  true;
+                let children = treeItem['children']
+                if(children.length > 0){
+                  node['children'] = [];
+                  this.fillSelectTree(children, node['children'])
+                }
+                this.resourceTreeData.push(node)
+              }
+          }
           this.resourceTreeModel = true
+        }
+      });
+    },
+    fillSelectTree(listTree, selectTree) {
+      for(let item of listTree){
+          let node = {};
+          node['title'] = item['resourceName'];
+          node['value'] = item['id'];
+          node['expand'] =  true;
+          node['checked'] =  false;
+          if(item['roleId'] != null){
+              node['checked'] =  true;
+          }
+          let children = item['children']
+          if(children.length > 0){
+            node['children'] = [];
+            this.fillSelectTree(children, node['children'])
+          }
+          selectTree.push(node)
+      }
+    },
+    submitConfigTreeData(){
+      let selectedNodes = this.$refs.resourceTreeRef.getCheckedAndIndeterminateNodes();
+      let params  = {
+        roleId : this.editRoleId
+      }
+      if(selectedNodes && selectedNodes.length > 0){
+           let selectNodes = []
+           for(let node of selectedNodes){
+             selectNodes.push(node['value'])
+           }
+           params['resourceIds'] = selectNodes
+      }
+      this.$ajax.post({
+        url: "/role/configAndUpdateByRoleId",
+        params: params,
+        success: result => {
+            this.reloadList();
+            this.resourceTreeModel = false
         }
       });
     }

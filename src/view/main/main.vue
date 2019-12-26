@@ -13,14 +13,14 @@
                     <menu-item v-if="!item.children" :name="`${item.menuId}`"  :key="item.menuId">
                             <Icon :type="item.icon"  />{{item.menuName}}
                     </menu-item>
-                    <Submenu v-else-if="item.children && item.children.length > 1" :name="`${item.menuId}+''`" :key="item.menuId">
+                    <Submenu v-else-if="item.children && item.children.length > 0" :name="`${item.menuId}+''`" :key="item.menuId">
                         <template slot="title">
                             <Icon :type="item.icon" />{{item.menuName}}
                         </template>
                         <template >
-                                <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.menuId}`">
-                                    <Icon :type="child.icon"  />{{child.menuName}}
-                                </menu-item>
+                            <menu-item  v-for="(child,index) in item.children " :key="index"  :name="`${child.menuId}`">
+                                <Icon :type="child.icon"  />{{child.menuName}}
+                            </menu-item>
                         </template>
                     </Submenu>
                 </template>
@@ -78,7 +78,7 @@
                 get () {
                     return this.$store.getters.tagNavList
                 },
-                set (val) {
+                set (vulue) {
                     this.$store.commit('setTagNavList', {key:'tagsView',vulue})
                 }
             },
@@ -140,6 +140,13 @@
                     content: '<p>退出登录？</p>',
                     onOk: () => {
                         this.$cookie.set('token', '')
+                        this.$store.dispatch('cleanDateCache')
+                        this.$store.dispatch('setUserLoginState', false)
+                        this.tagNavList =  []
+                        // this.tagNavList.push(this.getHomeInfo())
+                        this.$router.push({
+                            name: Config.loginUrl
+                        })
                     },
                     cancelText: '取消'
                 });

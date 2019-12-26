@@ -1,4 +1,4 @@
-import {routerList,MenuList, BeforeEnter} from '../../router/routerList'
+import {RouterList,MenuList, BeforeEnter} from '../../router/routerList'
 
 
 const setMenuListConst = (_routerList) => {
@@ -39,7 +39,7 @@ const toFillChildren = (menuList, children) =>{
 export default {
 
     state: {
-        routerList: routerList.concat(MenuList),
+        routerList: RouterList.concat(MenuList),
         menuList : [],
         breadcrumbList : []
     },
@@ -77,14 +77,19 @@ export default {
 
             })
            state.breadcrumbList = arr
+        },
+        CLEAN_DATA_CACHE: (state) => {
+            state.routerList =  RouterList.concat(MenuList)
+            state.menuList = []
+            state.breadcrumbList = []
         }
     },
     actions: {
+        cleanDateCache({commit}){
+            commit('CLEAN_DATA_CACHE')
+        },
         setRouterList({commit}, routerList){
             commit('SET_ROUTER_LIST', routerList)
-        },
-        setMenuList({commit}, menuList){
-            commit('SET_MENU_LIST', menuList)
         },
         setResourceList({ commit, state }, resourceList) {
             return new Promise(resolve => {
@@ -92,11 +97,15 @@ export default {
               let rList = [];
               setMemuFromResource(resourceList, menuList, rList)
               commit('SET_MENU_LIST', menuList)
-              MenuList.name = 'root-dynamic';
-              MenuList.children = rList;
+              //所有路由对象列表
+              let routerObj = {}
+              //对象复制     
+              Object.assign(routerObj,MenuList)
+              routerObj.name = 'root-dynamic';
+              routerObj.children = rList;
               let routerArr = [
                 { path: '*', redirect: '/404', hidden: true },
-                MenuList
+                routerObj
               ]
               resolve({
                 routerList: routerArr,
@@ -106,7 +115,6 @@ export default {
         setBreadCrumb({commit}, route){
             commit('SET_BREAD_CRUMB', route)
         }
-
     }
 
 }
@@ -120,7 +128,7 @@ const setMemuFromResource = (resourceList,  menuList, rList)=>{
             setMemuFromResource(children, menuObj['children'], rList)
         }
         menuList.push(menuObj)
-        rList.push(fillMenuObj(resource))
+        rList.push(menuObj)
      
     }
 

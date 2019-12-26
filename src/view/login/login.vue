@@ -23,26 +23,22 @@
         },
         methods:{
             handleSubmit({ userName, password }){
-
                 let params = {
                     'accountName':userName,
                     'password':password
                 }
                 this.$ajax.post({
-                    url: "/system/login",
+                    url: "/account/login",
                     params: params,
                     notice: false,
                     success: result => {
                         let data = result.data;
                         this.$cookie.set('token', data.token)
-                          this.$router.push({
-                             name: Config.homeName
-                          })
+                        this.$router.push({
+                            name: Config.homeName
+                        })
                     }
                 });    
-                // this.$router.push({
-                //     name: Config.homeUrl
-                // })
             }
         },
         components: {

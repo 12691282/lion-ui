@@ -1,7 +1,9 @@
 // 引用axios
 import axios from 'axios'
-import config from '@/config'
+import Config from '@/config'
 import iView from 'view-design';
+import Cookie from 'js-cookie'
+import Router from '@/router';
 // 配置API接口地址
 const root = 'http://localhost:8091/lion'
 
@@ -13,15 +15,25 @@ const http = axios.create({
         'Content-Type': 'application/json; charset=utf-8'
     }
 })
-
+// 500 token 失效
 http.interceptors.response.use(response => {
-    if (response.data && response.data.code === 500) {
-
+    if (response.data && response.data.code === "500") {
+        Router.push({
+            name: Config.loginUrl
+         })
     }
     return response
 }, error => {
     return Promise.reject(error)
 })
+
+ // 请求头带上token
+http.interceptors.request.use(config => {
+    config.headers['token'] = Cookie.get('token');
+    return config;
+  }, error => {
+    return Promise.reject(error);
+  });
 
 
 // 自定义判断元素类型JS
@@ -69,7 +81,7 @@ function apiAxios ({method, notice=true, url, params, success, failure}) {
     }).then((res)=> {
         let data = res.data
         console.log('ajax result => ', data)
-            if (data.code === config.result_code.success) {
+            if (data.code === Config.result_code.success) {
                 if (success) {
                     if(notice){
                         iView.Notice.success({
