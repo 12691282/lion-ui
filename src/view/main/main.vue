@@ -39,10 +39,12 @@
                               :animated="false"
                               @on-tab-remove="handleTabRemove"
                               @on-click="onTagClick"  >
-                            <tab-pane :label="tag.title" :name="tag.name" 
-                                    :icon="tag.icon" v-for="(tag, tagIndex) in tagNavList"
-                                     :key="tagIndex" v-if="tag.isClose">
-                            </tab-pane>
+                             <template v-for="(tagItem, tagIndex) in tagNavList" >
+                                   <tab-pane :label="tagItem.title" :name="tagItem.name" 
+                                    :icon="tagItem.icon" 
+                                     :key="tagIndex" v-if="tagItem.isClose">
+                                    </tab-pane>
+                              </template>
                         </Tabs>
                         <Card>
                             <router-view />
@@ -70,17 +72,18 @@
                 currentTab : null,
                 logoImg : LogoImg,
                 homeName : Config.homeName,
-                autoWidth: ""
+                autoWidth: "",
+                tagNavList:[]
             }
         },
         computed :{
             tagNavList : {
                 get () {
-                    return this.$store.getters.tagNavList
+                    return this.tagNavList
                 },
                 set (vulue) {
-                    this.$store.commit('setTagNavList', {key:'tagsView',vulue})
-                }
+                   this.tagNavList.push(vulue)
+                }                            
             },
             breadcrumbList() {
                 return this.$store.getters.breadcrumbList
@@ -142,8 +145,6 @@
                         this.$cookie.set('token', '')
                         this.$store.dispatch('cleanDateCache')
                         this.$store.dispatch('setUserLoginState', false)
-                        this.tagNavList =  []
-                        // this.tagNavList.push(this.getHomeInfo())
                         this.$router.push({
                             name: Config.loginUrl
                         })
