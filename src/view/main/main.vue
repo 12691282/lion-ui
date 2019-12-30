@@ -27,12 +27,15 @@
             </Menu>
         </Sider>
         <Layout :style="{marginLeft: '200px'}">
+              <div  style="background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 3px 2px;text-align:right">
+                        <span style="margin-right:10px;">用户名:{{userName}}</span>
+                        <font style="cursor: pointer;margin-right: 30px;" @click="logoutAccount">登出</font>
+                </div>
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
                 <breadcrumb-nav :breadcrumb-list="breadcrumbList"></breadcrumb-nav>
             </Header>
-            <div style="position: absolute;left: 1200px;top: 25px;">
-                <font style="cursor: pointer;" @click="logoutAccount">登出</font>
-            </div>
+               
+                  
             <Content class="main-content-con" >
                 <Layout class="main-layout-con" >
                         <Tabs type="card" closable :value="currentTab"
@@ -77,19 +80,14 @@
             }
         },
         computed :{
-            tagNavList : {
-                get () {
-                    return this.tagNavList
-                },
-                set (vulue) {
-                   this.tagNavList.push(vulue)
-                }                            
-            },
             breadcrumbList() {
                 return this.$store.getters.breadcrumbList
             },
             menuList (){
                 return this.$store.getters.menuList
+            },
+            userName (){
+                return this.$cookie.get('userName')
             }
         },
         methods: {
@@ -142,12 +140,23 @@
                     title: '确认!',
                     content: '<p>退出登录？</p>',
                     onOk: () => {
-                        this.$cookie.set('token', '')
-                        this.$store.dispatch('cleanDateCache')
-                        this.$store.dispatch('setUserLoginState', false)
-                        this.$router.push({
-                            name: Config.loginUrl
-                        })
+                          let params = {
+                              token : this.$cookie.get('token')
+                          } 
+                          this.$ajax.post({
+                            url: "/account/logout",
+                            params: params,
+                            notice: false,
+                            success: result => {
+                                this.$cookie.set('token', '')
+                                this.$cookie.set('userName', '')
+                                this.$store.dispatch('cleanDateCache')
+                                this.$store.dispatch('setUserLoginState', false)
+                                this.$router.push({
+                                    name: Config.loginUrl
+                                })
+                            }
+                        }); 
                     },
                     cancelText: '取消'
                 });

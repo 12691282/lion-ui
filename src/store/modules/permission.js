@@ -144,7 +144,7 @@ const fillMenuObj = (resource) =>{
     menuObj['component'] = toComponent(urlName)
     menuObj['meta'] = {
         'menuName' :resource['resourceName'] ,
-        'icon' :  resource['icon'] || 'md-person-add'
+        'icon' :  resource['icon'] || 'ios-alert-outline'
     }
     menuObj['beforeEnter'] = BeforeEnter
     return menuObj

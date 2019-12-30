@@ -32,8 +32,9 @@
                     params: params,
                     notice: false,
                     success: result => {
-                        let data = result.data;
-                        this.$cookie.set('token', data.token)
+                        let userData = result.data;
+                        this.$cookie.set('userName', userData.name)
+                        this.$cookie.set('token', userData.token)
                         this.$router.push({
                             name: Config.homeName
                         })

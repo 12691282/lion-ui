@@ -17,6 +17,9 @@
     </Form>
 
     <TreeTable :items='treeTableDatalist'  :columns='columnsTitle'>
+         <template slot-scope="{ data }" slot="icon">
+            <Icon  :type="data.icon"   style="font-size: 20px;"/>
+         </template>
          <template slot-scope="{ data }" slot="action">
             <Button type="primary" size="small" @click="addChildRecord(data)">增加子节点</Button>
             <Button type="primary" size="small" @click="editRecord(data)">修改</Button>
@@ -85,6 +88,18 @@
           </Select>
         </FormItem>
 
+        <FormItem label="图标" prop="icon">
+          <Poptip placement="bottom-start">
+            <Input v-model="resourceModel.icon" style="width: 286px;" placeholder="选择图标" />
+            <div class="api" slot="content">
+                   <template v-for="(iconItem, iconIndex) in iconList" >
+                      <Icon  :key="iconIndex" @click="selectIcon(iconIndex)" :type="iconItem"   style="font-size: 30px;"/>
+                      <br  v-if="checkIconIndex(iconIndex)" />
+                   </template>
+            </div>
+          </Poptip>
+        </FormItem>
+
         <FormItem label="顺序号" prop="orderNo">
           <Input
             type="text"
@@ -139,6 +154,7 @@ export default {
         resourceName: "",
         resourceUrl: "",
         resourceType: "",
+        icon:"",
         description: ""
       },
       searchItem: {
@@ -152,7 +168,7 @@ export default {
       columnsTitle: [
         {
           title: "资源名称",
-          width: 80,
+          width: 50,
           key: "resourceName"
         },
         {
@@ -164,7 +180,13 @@ export default {
           key: "resourceTypeName"
         },
         {
+          title: "资源图标",
+          slot: "icon",
+          align: "center"
+        },
+        {
           title: "描述",
+           width: 140,
           key: "description"
         },
         {
@@ -174,10 +196,21 @@ export default {
         }
       ],
       treeTableDatalist: [],
-      index: 1
+      index: 1,
+      iconList:["ios-browsers","ios-chatbubbles","logo-buffer","ios-create","ios-copy",
+        "ios-clipboard-outline","ios-folder-open-outline","ios-paper-outline","ios-menu",
+        "ios-photos-outline","md-settings","ios-speedometer","md-stats","ios-switch",
+        "ios-time","ios-pricetags-outline","ios-podium-outline","ios-list","ios-keypad-outline",
+        "ios-create-outline","md-person-add","md-bookmarks"]
     };
   },
   methods: {
+    selectIcon(_index){
+        this.resourceModel.icon = this.iconList[_index];
+    },
+    checkIconIndex(_index){
+        return ((_index+1) % 5 === 0)
+    },
     getList() {
       let params = {
         resourceName: this.searchItem.resourceName,
@@ -307,5 +340,6 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+   
 </style>

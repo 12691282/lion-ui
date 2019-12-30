@@ -23,9 +23,9 @@
                         <label v-if="column.slot === 'selection'">
                             <input type="checkbox" :value="item.id" v-model="checkGroup" @click="handleCheckClick(item,$event,index)">
                         </label>
-                        <div v-if="column.slot === 'action'">
-                                <slot name="action" :data="item"></slot>
-                        </div>  
+                        <div v-if="column.slot !== ''">
+                            <slot :name="column.slot" :data="item"></slot>
+                        </div> 
                         <label>
                             <span v-if='snum==iconRow()'>
                                 <span v-if="item.pid != null" v-html="item.spaceHtml"></span>
