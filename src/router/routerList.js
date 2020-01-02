@@ -46,7 +46,7 @@ export const BeforeEnter = (to, from, next) => {
     let token = Cookies.get('token');
 
     if (!token || !/\S/.test(token)) {
-        next({ name: 'login' });
+        next({ name: Config.loginUrl});
     }
     
     next();

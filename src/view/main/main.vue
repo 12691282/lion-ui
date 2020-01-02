@@ -160,10 +160,8 @@
                     },
                     cancelText: '取消'
                 });
-            }
-        },
-        watch: {
-            '$route'(newRoute) {
+            },
+            routerChange(newRoute){
                 const { name, path, params, meta } = newRoute
                 this.currentTab = name
                 if(!this.checkNavList(name)){
@@ -173,15 +171,12 @@
                 this.$store.dispatch('setBreadCrumb', newRoute)
             }
         },
-        mounted () {
-            this.currentTab = Config.homeName
-            if(this.tagNavList.length === 0){
-                this.$router.push({'name':Config.homeName})
-                //初始化时加入首页
-                this.tagNavList.push(this.getHomeInfo())
-            }
-          
-
+        watch: {
+            '$route':'routerChange'
+        },
+        created () {
+            console.log('created  init router')
+            this.routerChange(this.$route);
         }
     }
 </script>

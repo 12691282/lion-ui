@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '@/store'
+import Store from '@/store'
 import iView from 'iview'
 import Ajax from '../config/ajax'
 
@@ -10,13 +10,13 @@ Vue.use(Router)
 
 const router =  new Router({
   mode:'history',
-  routes: store.getters.routerList
+  routes: Store.getters.routerList
 })
 
 
 router.beforeEach((to, from, next) => {
-  iView.LoadingBar.start()
-  if(store.getters.isLoginMark){
+  console.log('router from ', from.fullPath, ' to :', to.fullPath)
+  if(Store.getters.isLoginMark){
      next()
   }else{
       Ajax.post({
@@ -25,8 +25,8 @@ router.beforeEach((to, from, next) => {
           success: result => {
             let resourceList = result.data
             if(resourceList && resourceList.length > 0){
-                store.dispatch('setResourceList', resourceList).then(res => {
-                  store.dispatch('setUserLoginState', true)
+                Store.dispatch('setResourceList', resourceList).then(res => {
+                  Store.dispatch('setUserLoginState', true)
                   let asyncRouter = res.routerList
                   router.addRoutes(asyncRouter)
               })
@@ -35,21 +35,10 @@ router.beforeEach((to, from, next) => {
           failure:error => {
               console.log('router beforeEach error')
           }
+        
       });
       next()
   }
-
-   
-    
-
-
-    
-
-  // if(to.path === config.loginUrl){
-  //     next({
-  //         name: config.loginUrl // 跳转到登录页
-  //     })
-  // }
 
 })
 

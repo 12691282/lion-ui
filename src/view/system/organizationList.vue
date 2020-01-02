@@ -35,7 +35,7 @@
       :mask-closable="false"
     >
       <p slot="header">
-        <span>{{titleName}}</span>z
+        <span>{{titleName}}</span>
       </p>
       <Form
         ref="resourceModel"
@@ -262,12 +262,11 @@ export default {
       }
     },
     reloadList() {
-      this.searchItem.roleName = "";
+      this.orgName = "";
       this.getList();
       this.isDisplay = false;
     },
     selectHigherUps(_nodes) {
-      console.log(_nodes)
       let node = _nodes[0];
       if (node) {
         this.orgModel.pid = node.value;

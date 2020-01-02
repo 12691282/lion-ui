@@ -59,7 +59,7 @@
             placeholder="请输入账号名"
           />
         </FormItem>
-        <FormItem label="密码" prop="password">
+        <FormItem label="密码" prop="password" :class="accountModel.id == null ? 'ivu-form-item-required' : ''"  >
           <Input
             type="password"
             v-model="accountModel.password"
@@ -68,7 +68,7 @@
             placeholder="请输入密码"
           />
         </FormItem>
-        <FormItem label="确认密码" prop="confirmPassword">
+        <FormItem label="确认密码" prop="confirmPassword" :class="accountModel.id == null ? 'ivu-form-item-required' : ''" >
           <Input
             type="password"
             v-model="accountModel.confirmPassword"
@@ -77,7 +77,7 @@
             placeholder="请输入确认密码"
           />
         </FormItem>
-        <FormItem label="E-mail" prop="email">
+        <FormItem label="E-mail" prop="email" >
           <Input
             type="text"
             v-model="accountModel.email"
@@ -86,7 +86,7 @@
             placeholder="请输入e-mail"
           />
         </FormItem>
-        <FormItem label="备注" prop="backup">
+        <FormItem label="备注" prop="backup" >
           <Input
             type="textarea"
             v-model="accountModel.backup"
@@ -113,7 +113,7 @@ export default {
   name: "",
   data() {
     const validatePass = (rule, value, callback) => {
-      if (value === "") {
+      if (this.accountModel.id == null && value === "") {
         callback(new Error("请输入密码"));
       } else {
         if (this.accountModel.confirmPassword !== "") {
@@ -124,9 +124,9 @@ export default {
       }
     };
     const validatePassCheck = (rule, value, callback) => {
-      if (value === "") {
+      if (this.accountModel.id == null && value === "") {
         callback(new Error("请输入确认密码"));
-      } else if (value !== this.accountModel.password) {
+      } else if (this.accountModel.id == null && value !== this.accountModel.password) {
         callback(new Error("两次输入密码不一直!"));
       } else {
         callback();
@@ -136,7 +136,6 @@ export default {
       isDisplay: false,
       titleName: "",
       accountModel: {
-        id: "",
         name: "",
         accountName: "",
         password: "",
@@ -154,7 +153,7 @@ export default {
           { required: true, message: "请输入账号名.", trigger: "blur" }
         ],
         password: [
-          { required: true, validator: validatePass, trigger: "blur" },
+          { validator: validatePass, trigger: "blur" },
           {
             type: "string",
             min: 6,
@@ -163,7 +162,7 @@ export default {
           }
         ],
         confirmPassword: [
-          { required: true, validator: validatePassCheck, trigger: "blur" },
+          {  validator: validatePassCheck, trigger: "blur" },
           {
             type: "string",
             min: 6,
