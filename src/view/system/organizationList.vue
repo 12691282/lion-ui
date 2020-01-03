@@ -57,7 +57,7 @@
           </Poptip>
         </FormItem>
 
-        <FormItem  label="组织机构名字" :label-width="110" prop="organizationName">
+        <FormItem  label="组织机构名字" :label-width="110" prop="organizationName"  >
           <Input
             type="text"
             v-model="orgModel.organizationName"

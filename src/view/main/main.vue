@@ -27,15 +27,9 @@
             </Menu>
         </Sider>
         <Layout :style="{marginLeft: '200px'}">
-              <div  style="background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 3px 2px;text-align:right">
-                        <span style="margin-right:10px;">用户名:{{userName}}</span>
-                        <font style="cursor: pointer;margin-right: 30px;" @click="logoutAccount">登出</font>
-                </div>
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-                <breadcrumb-nav :breadcrumb-list="breadcrumbList"></breadcrumb-nav>
+                <header-bar></header-bar>
             </Header>
-               
-                  
             <Content class="main-content-con" >
                 <Layout class="main-layout-con" >
                         <Tabs type="card" closable :value="currentTab"
@@ -62,13 +56,13 @@
 
     import {mapMutations} from 'vuex'
     import {initLocalStorage} from '@/store/util'
-    import BreadcrumbNav from '@/view/main/components/breadcrumb'
+    import HeaderBar from './components/header-bar'
     import Config from '@/config';
     import LogoImg from '@/assets/images/logo.jpg'
 
     export default {
         components: {
-            BreadcrumbNav
+            HeaderBar
         },
         data () {
             return {
@@ -80,14 +74,8 @@
             }
         },
         computed :{
-            breadcrumbList() {
-                return this.$store.getters.breadcrumbList
-            },
             menuList (){
                 return this.$store.getters.menuList
-            },
-            userName (){
-                return this.$cookie.get('userName')
             }
         },
         methods: {
@@ -134,32 +122,6 @@
                     }
                 }
                 return false;
-            },
-            logoutAccount(){
-                this.$Modal.confirm({
-                    title: '确认!',
-                    content: '<p>退出登录？</p>',
-                    onOk: () => {
-                          let params = {
-                              token : this.$cookie.get('token')
-                          } 
-                          this.$ajax.post({
-                            url: "/account/logout",
-                            params: params,
-                            notice: false,
-                            success: result => {
-                                this.$cookie.set('token', '')
-                                this.$cookie.set('userName', '')
-                                this.$store.dispatch('cleanDateCache')
-                                this.$store.dispatch('setUserLoginState', false)
-                                this.$router.push({
-                                    name: Config.loginUrl
-                                })
-                            }
-                        }); 
-                    },
-                    cancelText: '取消'
-                });
             },
             routerChange(newRoute){
                 const { name, path, params, meta } = newRoute

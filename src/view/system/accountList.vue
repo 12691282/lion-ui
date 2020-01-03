@@ -52,6 +52,7 @@
         </FormItem>
         <FormItem label="账号名" prop="accountName">
           <Input
+            :disabled="accountNameSetDisable"
             type="text"
             v-model="accountModel.accountName"
             maxlength="18"
@@ -133,6 +134,7 @@ export default {
       }
     };
     return {
+      accountNameSetDisable:false,
       isDisplay: false,
       titleName: "",
       accountModel: {
@@ -243,6 +245,7 @@ export default {
     },
     editRecord(index) {
       this.titleName = "修改";
+      this.accountNameSetDisable = true
       let rowRocord = this.list[index];
       this.$refs.accountModel.resetFields();
       let newObj = {};
@@ -305,6 +308,7 @@ export default {
     },
     addNew() {
       this.titleName = "新增";
+      this.accountNameSetDisable = false
       this.handleReset();
       this.isDisplay = true;
     },

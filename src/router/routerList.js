@@ -52,17 +52,17 @@ export const BeforeEnter = (to, from, next) => {
     next();
 }
 
-    let list = [{
+export const staticList = [{
         name: '',
         path: '/',
-        redirect : '/' +Config.loginUrl,
+        redirect : '/' +Config.homeUrl,
         meta:{
             hideMenu: true
         }
     },
     {
         name:  Config.loginUrl,
-        path: '/' + Config.loginUrl,
+        path: '/' + Config.homeUrl,
         component: Login,
         meta:{
             hideMenu: true

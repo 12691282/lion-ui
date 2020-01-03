@@ -1,8 +1,10 @@
 <template>
-    <Breadcrumb :style="{margin: '16px 0'}">
-        <BreadcrumbItem :to="homeUrl">{{homeName}}</BreadcrumbItem>
-        <BreadcrumbItem v-for="(bread, breadIndex) in breadcrumbList" :key="breadIndex" >{{bread.name}}</BreadcrumbItem>
-    </Breadcrumb>
+    <div style="display: inline-block;vertical-align: top;margin: 16px 0px;">
+        <Breadcrumb >
+            <BreadcrumbItem :to="homeUrl">{{homeName}}</BreadcrumbItem>
+            <BreadcrumbItem v-for="(bread, breadIndex) in breadcrumbList" :key="breadIndex" >{{bread.name}}</BreadcrumbItem>
+        </Breadcrumb>
+    </div>
 </template>
 
 <script>

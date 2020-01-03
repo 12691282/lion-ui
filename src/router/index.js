@@ -4,7 +4,6 @@ import Store from '@/store'
 import iView from 'iview'
 import Ajax from '../config/ajax'
 
-
 Vue.use(Router)
 
 

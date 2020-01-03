@@ -9,7 +9,7 @@
         name: "",
         data() {
             return {
-                msg: "home page"
+                msg: "home 首页详情 "
             }
         },
         components: {
