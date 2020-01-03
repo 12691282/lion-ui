@@ -4,13 +4,13 @@
       <div class="custom-content-con">
           <div>
               <Dropdown style="" @on-click="dropdownSelect" >
-                    <Badge style="cursor:pointer;" :dot="true">
+                    <Badge style="cursor:pointer;" :dot="!!messageUnreadCount">
                         <Avatar icon="ios-person" />
                     </Badge>
                     <Icon :size="18" type="md-arrow-dropdown"></Icon>
                     <DropdownMenu slot="list" >
                         <DropdownItem name="message">
-                        消息中心<Badge style="margin-left: 10px" :count="1"></Badge>
+                        消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
                         </DropdownItem>
                         <DropdownItem name="changePwd">修改密码</DropdownItem>
                         <DropdownItem name="logout">退出登录</DropdownItem>
@@ -34,6 +34,12 @@ export default {
   name: 'HeaderBar',
   components: {
       BreadcrumbNav
+  },
+  props: {
+    messageUnreadCount: {
+      type: Number,
+      default: 0
+    }
   },
   computed: {
        breadcrumbList() {

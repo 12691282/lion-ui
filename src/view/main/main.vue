@@ -5,9 +5,6 @@
                 <img style="margin-left: 20px; margin-top: 10px;" :src="logoImg"/>
             </div>
             <Menu  theme="dark" width="auto" @on-select="selectMenu">
-                <!-- <menu-item   name="home">
-                    <Icon type="md-home" />首页
-                </menu-item> -->
                 <template v-for="item in menuList" >
 
                     <menu-item v-if="!item.children" :name="`${item.menuId}`"  :key="item.menuId">
@@ -28,7 +25,7 @@
         </Sider>
         <Layout :style="{marginLeft: '200px'}">
             <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">
-                <header-bar></header-bar>
+                <header-bar :message-unread-count="unreadMsg"></header-bar>
             </Header>
             <Content class="main-content-con" >
                 <Layout class="main-layout-con" >
@@ -66,6 +63,7 @@
         },
         data () {
             return {
+                unreadMsg:0,
                 currentTab : null,
                 logoImg : LogoImg,
                 homeName : Config.homeName,
