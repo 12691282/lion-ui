@@ -239,6 +239,7 @@ export default {
                  node['title'] = treeItem['resourceName'];
                  node['value'] = treeItem['id'];
                  node['expand'] =  true;
+                 node['checked'] =  false;
                 let children = treeItem['children']
                 if(children.length > 0){
                   node['children'] = [];
@@ -258,13 +259,14 @@ export default {
           node['value'] = item['id'];
           node['expand'] =  true;
           node['checked'] =  false;
-          if(item['roleId'] != null){
-              node['checked'] =  true;
-          }
+       
           let children = item['children']
           if(children.length > 0){
             node['children'] = [];
             this.fillSelectTree(children, node['children'])
+          }else if(item['roleId'] != null)
+          {
+              node['checked'] =  true;
           }
           selectTree.push(node)
       }

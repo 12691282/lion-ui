@@ -123,7 +123,7 @@ export default {
       columnsTitle: [
         {
           title: "组织机构名字",
-          width: 80,
+          width: 120,
           key: "organizationName"
         },
       {

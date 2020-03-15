@@ -3,7 +3,7 @@
         <table class="table table-bordered" id='hl-tree-table'>
             <thead>
                 <tr>
-                    <th v-for="(column,columnsIndex) in cloneColumns" :key="columnsIndex">
+                    <th v-for="(column,columnsIndex) in cloneColumns" :width="column._width" :key="columnsIndex">
                         <label v-if="column.type === 'selection'">
                             <input type="checkbox" v-model="checks" @click="handleCheckAll">
                         </label>

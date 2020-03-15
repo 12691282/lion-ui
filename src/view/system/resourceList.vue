@@ -1,16 +1,6 @@
 <template>
   <div>
-    <Form :model="searchItem" :label-width="80" ref="searchItem" inline>
-      <FormItem label="资源名称">
-        <Input
-          v-model="searchItem.roleName"
-          maxlength="24"
-          placeholder="请输入资源名称..."
-        />
-      </FormItem>
-      <FormItem style="margin-left: -30px;">
-        <Button type="primary" @click="querySubmit()">查询</Button>
-      </FormItem>
+    <Form   :label-width="80"   inline>
       <FormItem style="margin-left: -60px;">
         <Button type="success" @click="addNew()">新增</Button>
       </FormItem>
@@ -68,7 +58,7 @@
           />
         </FormItem>
 
-        <FormItem label="资源连接" prop="resourceUrl">
+        <FormItem label="资源链接" prop="resourceUrl">
           <Input
             type="text"
             v-model="resourceModel.resourceUrl"
@@ -76,16 +66,6 @@
             show-word-limit
             placeholder="请输入资源连接"
           />
-        </FormItem>
-
-        <FormItem label="资源类型" prop="resourceType">
-          <Select v-model="resourceModel.resourceType">
-            <Option
-              v-for="item in resourceTypeList"
-              :value="item.value"
-              :key="item.value"
-            >{{ item.label }}</Option>
-          </Select>
         </FormItem>
 
         <FormItem label="图标" prop="icon">
@@ -98,6 +78,20 @@
                    </template>
             </div>
           </Poptip>
+        </FormItem>
+
+        
+        <FormItem label="按钮名称" prop="selectButton">
+          <Select
+            multiple
+            type="text"
+            placeholder="请选择按钮名称"
+            v-model="buttionSelectArray"
+          >
+           <Option v-for="item in buttonTypeArr" :value="item.value"
+            :key="item.value" @click.native="selectButtonName(item)" >{{item.label}}
+            </Option>
+          </Select>
         </FormItem>
 
         <FormItem label="顺序号" prop="orderNo">
@@ -127,6 +121,7 @@
         <Button type="primary" @click="submitData">确定</Button>
       </div>
     </Modal>
+
   </div>
 </template>
 
@@ -138,14 +133,21 @@ export default {
   name: "resourceList",
   components: {TreeTable},
   data() {
+
+    const validateButtonName = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入资源名称"));
+      } else {
+        callback();
+      }
+    };
+
+
     return {
       rootTreeNode:[{'title':'系统菜单', 'value': null, 'expand':true, children:[]}],
       higherUpsList: [],
-      resourceTypeList: [
-        { value: 0, label: "菜单" },
-        { value: 1, label: "按钮" }
-      ],
       isDisplay: false,
+      buttionModelView:false,
       titleName: "",
       resourceModel: {
         id: "",
@@ -153,44 +155,48 @@ export default {
         pname: "",
         resourceName: "",
         resourceUrl: "",
-        resourceType: "",
+        resourceType: 0,//0:"菜单"
         icon:"",
         description: ""
       },
-      searchItem: {
-        roleName: ""
-      },
       resourceModelRules: {
-        roleName: [
-          { required: true, message: "请输入角色名称.", trigger: "blur" }
+        resourceName: [
+          {  required: true, message: "请输入资源名称.", trigger: "blur" },
+        ],
+        resourceUrl: [
+          { required: true, message: "请输入资源连接.", trigger: "blur" }
         ]
       },
       columnsTitle: [
         {
           title: "资源名称",
-          width: 50,
+          width: 80,
           key: "resourceName"
         },
         {
           title: "资源连接",
+          width: 30,
           key: "resourceUrl"
-        },
-        {
-          title: "资源类型",
-          key: "resourceTypeName"
         },
         {
           title: "资源图标",
           slot: "icon",
+          width: 50,
           align: "center"
         },
         {
+          title: "资源按钮",
+          width: 150,
+          key: "resourceTypeName"
+        },
+        {
           title: "描述",
-           width: 140,
+          width: 140,
           key: "description"
         },
         {
           title: "操作",
+          width: 80,
           slot: "action",
           align: "center"
         }
@@ -201,8 +207,14 @@ export default {
         "ios-clipboard-outline","ios-folder-open-outline","ios-paper-outline","ios-menu",
         "ios-photos-outline","md-settings","ios-speedometer","md-stats","ios-switch",
         "ios-time","ios-pricetags-outline","ios-podium-outline","ios-list","ios-keypad-outline",
-        "ios-create-outline","md-person-add","md-bookmarks"]
-    };
+        "ios-create-outline","md-person-add","md-bookmarks"],
+      buttonTypeArr : [{value:"view", label:'查看'},{value:"edit", label:'修改'},
+                       {value:"new", label:'新增'},{value:"delete", label:'删除'},
+                       {value:"stop", label:'停用'}],
+      buttionSelectArray:[],
+      selectedButtonArr:[],                 
+      otherButtonName:false  
+    }
   },
   methods: {
     selectIcon(_index){
@@ -213,7 +225,6 @@ export default {
     },
     getList() {
       let params = {
-        resourceName: this.searchItem.resourceName,
         size: this.size,
         index: this.index
       };
@@ -281,6 +292,10 @@ export default {
       this.handleReset();
       this.resourceModel.pid = data.id;
       this.resourceModel.pname = data.resourceName;
+      this.buttionSelectArray = []
+      for(let bt of this.buttonTypeArr){
+            this.buttionSelectArray.push(bt.value)
+      }
       this.isDisplay = true;
     },
     querySubmit() {
@@ -289,6 +304,10 @@ export default {
     addNew() {
       this.titleName = "新增";
       this.handleReset();
+      this.resourceModel.id = null;
+      this.resourceModel.pid = null;
+      this.resourceModel.pname = null;
+      this.$refs.resourceModel.resetFields();
       this.isDisplay = true;
     },
     submitData() {
@@ -299,6 +318,7 @@ export default {
             url: "/resource/saveOrUpdate",
             params: params,
             success: result => {
+              this.isDisplay = false;
               this.reloadList();
             }
           });
@@ -307,13 +327,13 @@ export default {
     },
     cancelInput() {
       this.handleReset();
-      this.isDisplay = false;
-    },
-    handleReset() {
       this.resourceModel.id = null;
       this.resourceModel.pid = null;
       this.resourceModel.pname = null;
       this.$refs.resourceModel.resetFields();
+      this.isDisplay = false;
+    },
+    handleReset() {
       let selectedNodes = this.$refs.higherUpsTree.getSelectedNodes();
       if (selectedNodes) {
         for (let node of selectedNodes) {
@@ -322,7 +342,6 @@ export default {
       }
     },
     reloadList() {
-      this.searchItem.roleName = "";
       this.getList();
       this.isDisplay = false;
     },
@@ -332,6 +351,9 @@ export default {
         this.resourceModel.pid = node.value;
         this.resourceModel.pname = node.title;
       }
+    },
+    selectButtonName(_item){
+      this.selectedButtonArr.push(_item)
     }
   },
   mounted() {

@@ -136,6 +136,7 @@ export default {
         success: result => {
           let dataList = result.data;
           this.roleDataList = []
+          this.resourceRoleList = []
           if(dataList.length > 0){
              for(let item of dataList){
                 this.roleDataList.push({
@@ -151,12 +152,11 @@ export default {
       let rowData = this.list[index]
       this.authorityId = rowData.id
       let roleIdList = rowData['roleIdList']
+      this.hadRoleIds = []
       if(roleIdList){
           this.hadRoleIds = roleIdList.split(',')
-      }else{
-          this.hadRoleIds = []
       }
-          this.isDisplay = true
+      this.isDisplay = true
     },
     confirmAndUpdateAuthority(){
       let params = {
